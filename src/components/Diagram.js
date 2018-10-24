@@ -11,11 +11,16 @@ class Diagram extends Component {
   }
 
   componentWillMount() {
-    // this.props.initGpsData()
+    this.props.initGpsData()
   }
 
   render() {
     let { holes, topLinePoints } = this.props
+    let topLinePath = ''
+    for (let i = 0;i < topLinePoints.length;i++) {
+      if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
+      if (i !== 0) topLinePath += "T " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
+    }
     return (
       <ScrollView>
         <Svg
@@ -31,6 +36,7 @@ class Diagram extends Component {
             </G>
           })}
           {/* <Path d=" M 50 50 L 60 60 " stroke="black" /> */}
+          <Path d={topLinePath} stroke="black" fill="none"/>
         </Svg>
       </ScrollView>
     )
