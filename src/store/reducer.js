@@ -8,16 +8,45 @@ const initialState = {
       { value: '其他炮孔' }
     ],
     topLinePoints: [
-      { GPS: '' }
+      { 
+        GPS: '132.6666633 22.1231221',
+        x: '',
+        y: '' 
+      },
+      { 
+        GPS: '132.6666611 22.1231211',
+        x: '',
+        y: '' 
+      },
     ],
     holes: [
       {
-        number: '',
-        GPS: '',
+        number: '1',
+        GPS: '132.6666677 22.1231235',
         l: '',
         resistLine: '',
-        type: '其它炮孔'
-      }
+        type: '其它炮孔',
+        x: '',
+        y: ''
+      },
+      {
+        number: '2',
+        GPS: '132.6666682 22.1231274',
+        l: '',
+        resistLine: '',
+        type: '其它炮孔',
+        x: '',
+        y: ''
+      },
+      {
+        number: '3',
+        GPS: '132.6666656 22.1231292',
+        l: '',
+        resistLine: '',
+        type: '其它炮孔',
+        x: '',
+        y: ''
+      },
     ]
   },
   blastIndexDesign: {
