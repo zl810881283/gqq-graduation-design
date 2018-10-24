@@ -27,15 +27,15 @@ class Diagram extends Component {
           height="1000"
           width="1000"
         >
-          {holes.map(item => {
+          {holes.map((item, index) => {
             return <G key={item.number}>
               <Circle cx={item.x} cy={item.y} r="20" fill="white" stroke="black" />
               <Text x={item.x-8} y={item.y+10} fontSize="30">
                 <TSpan>{item.number}</TSpan>
               </Text>
+              { index !== 0 ? <Path d={`M ${holes[index-1].x} ${holes[index-1].y} L ${item.x} ${item.y}`} stroke="black" /> : null }
             </G>
           })}
-          {/* <Path d=" M 50 50 L 60 60 " stroke="black" /> */}
           <Path d={topLinePath} stroke="black" fill="none"/>
         </Svg>
       </ScrollView>
