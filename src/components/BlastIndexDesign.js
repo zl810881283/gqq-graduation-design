@@ -11,7 +11,7 @@ class BlastIndexDesign extends Component {
   }
 
   render() {
-    let { qChange, kChange, HChange, onOk, q, k, H, navigation, lenIndex, lenIndexChange, specChange, spec, holes } = this.props
+    let { qChange, kChange, HChange, onOk, k, H, navigation, lenIndex, lenIndexChange, specChange, spec, holes } = this.props
     return (
       <ScrollView style={styles.container}>
         {holes.map((item, index) => {
@@ -21,7 +21,7 @@ class BlastIndexDesign extends Component {
               <TextInput
                 onChangeText={value => qChange(value, index)}
                 style={styles.textInput}
-                value={q}
+                value={item.q}
                 placeholder="设计单耗q"
               />
             </List> 
@@ -158,6 +158,22 @@ let mapDispatchToProps = dispatch => {
           let a2 = GetDistance(holes[index-1].x, holes[index-1].y, item.x, item.y).toFixed(2)
           item.a = ((Number(a1) + Number(a2))/2).toFixed(2)
         }
+        // 设计装药量Q
+        if (item.type.indexOf('首排炮孔') != -1) {
+          item.Q = item.q * item.a * item.W * H
+          item.Q = Number(item.Q.toFixed(2))
+        } else {
+          item.Q = k * item.q * item.a * item.b * H
+          item.Q = Number(item.Q.toFixed(2))
+        }
+        // 药卷数量(以0.5卷为最小计量单位)
+        item.mediCount = Math.ceil(item.Q*2/spec)/2
+        // 超深
+        item.h = item.l - H
+        // 装药长度
+        item.mediLen = Number((item.Q/lenIndex).toFixed(2))
+        // 填塞长度
+        item.fillLen = Number((item.l-item.mediLen).toFixed(2))
 
         tableData.push([
           item.number,

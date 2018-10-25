@@ -7,12 +7,12 @@ import { Button } from 'antd-mobile-rn'
 
 class HoleIndexTable extends Component {
   render() {
-    let { tableHead, tableData, Q2Change, Len2Change } = this.props
+    let { tableHead, tableData, Q2Change, fillLenChange, focusRender } = this.props
     const Q2Input = (cellData, index) => {
       return <TextInput onChangeText={value => Q2Change(value, index)}>{cellData}</TextInput>
     }
-    const Len2Input = (cellData, index) => {
-      return <TextInput onChangeText={value => Len2Change(value, index)}>{cellData}</TextInput>
+    const fillLenInput = (cellData, index) => {
+      return <TextInput onChangeText={value => fillLenChange(value, index)}>{cellData}</TextInput>
     }
     return (
       <ScrollView>
@@ -25,7 +25,7 @@ class HoleIndexTable extends Component {
                   rowData.map((cellData, cellIndex) => (
                     <Cell 
                     key={cellIndex} 
-                    data={cellIndex === 8 ? Q2Input(cellData, index) : (cellIndex === 11 ? Len2Input(cellData, index) : cellData)} 
+                    data={cellIndex === 8 ? Q2Input(cellData, index) : (cellIndex === 11 ? fillLenInput(cellData, index) : cellData)} 
                     textStyle={styles.text}/>
                   ))
                 }
@@ -49,25 +49,52 @@ let mapDispatchToprops = dispatch => {
   return {
     Q2Change: (value, index) => {
       let state = store.getState()
-      let { tableData } = state.holeIndexTable
+      let { holes } = state.holeIndex
+      let { lenIndex } = state.blastIndexDesign
+      holes[index].Q2 = value
+      holes[index].mediLen = Number((value/lenIndex).toFixed(2))
+      holes[index].fillLen = Number((holes[index].l - holes[index].mediLen).toFixed(2))
+      dispatch({
+        type: "SET_HOLE_INDEX",
+        holeIndex: {
+          ...state.holeIndex,
+          holes
+        }
+      })
+      let { tableData, focusRender } = state.holeIndexTable
       tableData[index][8] = value
+      tableData[index][10] = holes[index].mediLen
+      tableData[index][11] = holes[index].fillLen
       dispatch({
         type: "SET_HOLE_INDEX_TABLE",
         holeIndexTable: {
           ...state.holeIndexTable,
-          tableData
+          tableData,
+          focusRender: !focusRender
         }
       })
     },
-    Len2Change: (value, index) => {
+    fillLenChange: (value, index) => {
       let state = store.getState()
-      let { tableData } = state.holeIndexTable
+      let { holes } = state.holeIndex
+      holes[index].fillLen = value
+      holes[index].mediLen = holes[index].l - value
+      dispatch({
+        type: "SET_HOLE_INDEX",
+        holeIndex: {
+          ...state.holeIndex,
+          holes
+        }
+      }) 
+      let { tableData, focusRender } = state.holeIndexTable
+      tableData[index][10] = holes[index].mediLen
       tableData[index][11] = value
       dispatch({
         type: "SET_HOLE_INDEX_TABLE",
         holeIndexTable: {
           ...state.holeIndexTable,
-          tableData
+          tableData,
+          focusRender: !focusRender
         }
       })
     },

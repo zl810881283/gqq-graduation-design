@@ -155,7 +155,7 @@ let mapDispatchToProps = dispatch => {
     deleteHole: () => {
       let state = store.getState()
       let { holes, focusRender } = state.holeIndex
-      holes.splice(holes.length-1, 1)
+      holes.splice(holes.length-1,1)
       dispatch({
         type: "SET_HOLE_INDEX",
         holeIndex: {
