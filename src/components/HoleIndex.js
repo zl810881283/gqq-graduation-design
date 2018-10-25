@@ -20,7 +20,8 @@ class HoleIndex extends Component {
     let {
       topLinePointChange, holesGPSChange, holesNumberChange, navigation,
       holesLChange, resistLineLChange, onOk, topLinePoints, addHole, 
-      addPoint, holes, resistLine, focusRender, radioData, holeTypeChange
+      addPoint, holes, resistLine, focusRender, radioData, holeTypeChange,
+      deletePoint, deleteHole
     } = this.props
     return (
       <ScrollView style={styles.container}>
@@ -40,6 +41,9 @@ class HoleIndex extends Component {
         </View>
         <Button onClick={addPoint} type="primary" style={styles.button}>
           <Text style={{fontSize:30}}>增加测点</Text>
+        </Button>
+        <Button onClick={deletePoint} type="warning" style={styles.button}>
+          <Text style={{fontSize:30}}>删除测点</Text>
         </Button>
         {holes.map((item, index) => {
           return (<View key={index} style={styles.holeTextInputs}>
@@ -85,6 +89,9 @@ class HoleIndex extends Component {
         })}
         <Button onClick={addHole} type="primary" style={styles.button}>
           <Text style={{fontSize:30}}>增加炮孔</Text>
+        </Button>
+        <Button onClick={deleteHole} type="warning" style={styles.button}>
+          <Text style={{fontSize:30}}>删除炮孔</Text>
         </Button>
         <Button onClick={() => onOk(navigation)} type="primary" style={styles.button}>
           <Text style={{fontSize:30}}>生成炮孔布置示意图</Text>
@@ -145,10 +152,40 @@ let mapDispatchToProps = dispatch => {
         }
       })
     },
+    deleteHole: () => {
+      let state = store.getState()
+      let { holes, focusRender } = state.holeIndex
+      holes.splice(holes.length-1, 1)
+      dispatch({
+        type: "SET_HOLE_INDEX",
+        holeIndex: {
+          ...state.holeIndex,
+          holes,
+          focusRender: !focusRender
+        }
+      })
+    },
     addPoint: () => {
       let state = store.getState()
       let { topLinePoints, focusRender } = state.holeIndex
-      topLinePoints.push({ GPS: '' })
+      topLinePoints.push({ 
+        GPS: '',
+        x: '',
+        y: '' 
+      })
+      dispatch({
+        type: "SET_HOLE_INDEX",
+        holeIndex: {
+          ...state.holeIndex,
+          topLinePoints,
+          focusRender: !focusRender
+        }
+      })
+    },
+    deletePoint: () => {
+      let state = store.getState()
+      let { topLinePoints, focusRender } = state.holeIndex
+      topLinePoints.splice(topLinePoints.length-1, 1)
       dispatch({
         type: "SET_HOLE_INDEX",
         holeIndex: {
