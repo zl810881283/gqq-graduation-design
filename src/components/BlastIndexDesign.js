@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, TextInput, ScrollView} from 'react-native';
+import { StyleSheet, Text, TextInput, ScrollView, View} from 'react-native';
 import store from '../store'
 import { connect } from "react-redux"
 import { List, Button } from 'antd-mobile-rn'
+import { GetDistance, getVerticalLen } from '../util'
 
 class BlastIndexDesign extends Component {
   static navigationOptions = {
@@ -10,17 +11,24 @@ class BlastIndexDesign extends Component {
   }
 
   render() {
-    let { qChange, kChange, HChange, onOk, q, k, H, navigation, lenIndex, lenIndexChange, specChange, spec } = this.props
+    let { qChange, kChange, HChange, onOk, q, k, H, navigation, lenIndex, lenIndexChange, specChange, spec, holes } = this.props
     return (
       <ScrollView style={styles.container}>
+        {holes.map((item, index) => {
+          return <View key={index}>
+            <Text style={styles.inputTitle}>炮孔编号：{item.number}</Text>
+            <List style={{marginBottom:20}}>
+              <TextInput
+                onChangeText={value => qChange(value, index)}
+                style={styles.textInput}
+                value={q}
+                placeholder="设计单耗q"
+              />
+            </List> 
+          </View>  
+        })}
         <Text style={styles.inputTitle}>输入参数：</Text>
         <List style={styles.list}>
-          <TextInput
-            onChangeText={value => qChange(value)}
-            style={styles.textInput}
-            value={q}
-            placeholder="单耗q"
-          />
           <TextInput
             onChangeText={value => kChange(value)}
             style={styles.textInput}
@@ -55,18 +63,24 @@ class BlastIndexDesign extends Component {
 }
 
 let mapStateToProps = state => {
-  return state.blastIndexDesign
+  return {
+    ...state.blastIndexDesign,
+    ...state.holeIndex
+  }
 }
 
 let mapDispatchToProps = dispatch => {
   return {
-    qChange: value => {
+    qChange: (value, index) => {
       let state = store.getState()
+      let { holes, focusRender } = state.holeIndex
+      holes[index].q = value
       dispatch({
-        type: "SET_BLAST_INDEX_DESIGN",
+        type: "SET_HOLE_INDEX",
         holeIndex: {
-          ...state.blastIndexDesign,
-          q: value
+          ...state.holeIndex,
+          holes,
+          focusRender: !focusRender
         }
       })
     },
@@ -111,8 +125,63 @@ let mapDispatchToProps = dispatch => {
       })
     },
     onOk: (navigation) => {
+      let state = store.getState()
+      let { holeIndex, blastIndexDesign } = state
+      let { holes } = holeIndex, { k, H, lenIndex, spec } = blastIndexDesign
+      let tableData = []
+      holes.forEach((item,index) => {
+        // 排距b
+        if (item.type.indexOf('首排炮孔') != -1) {
+          item.b = item.W
+        } else {
+          // 找到最近的两个首排炮孔，在他们的连线上做垂足
+          let firstHoles = holes.filter(i => i.type.indexOf('首排炮孔')!=-1)
+          let distances = firstHoles.map((i, index2) => {
+            return {
+              len: GetDistance(i.x, i.y, item.x, item.y).toFixed(2),
+              index: index2
+            }
+          })
+          distances.sort((a, b) => a.len - b.len)  // 升序排序
+          let firstLen = GetDistance(firstHoles[distances[0].index].x, firstHoles[distances[0].index].y, firstHoles[distances[1].index].x, firstHoles[distances[1].index].y)
+          item.b = getVerticalLen(Number(distances[0].len),Number(firstLen),Number(distances[1].len))
+        }
+        // 孔距a
+        if (item.type.indexOf('边角炮孔') != -1) {
+          if (index!==holes.length-1) {
+            item.a = GetDistance(holes[index+1].x, holes[index+1].y, item.x, item.y).toFixed(2)
+          } else {
+            item.a = GetDistance(holes[index-1].x, holes[index-1].y, item.x, item.y).toFixed(2)
+          }
+        } else {
+          let a1 = GetDistance(holes[index+1].x, holes[index+1].y, item.x, item.y).toFixed(2)
+          let a2 = GetDistance(holes[index-1].x, holes[index-1].y, item.x, item.y).toFixed(2)
+          item.a = ((Number(a1) + Number(a2))/2).toFixed(2)
+        }
 
-      // navigation.navigate('HoleIndexTable')
+        tableData.push([
+          item.number,
+          item.W,
+          item.b,
+          item.a,
+          item.l,
+          item.h,
+          item.q,
+          item.Q,
+          item.Q2,
+          item.mediCount,
+          item.mediLen,
+          item.fillLen
+        ])
+      })
+      dispatch({
+        type: 'SET_HOLE_INDEX_TABLE',
+        holeIndexTable: {
+          ...state.holeIndexTable,
+          tableData
+        }
+      })
+      navigation.navigate('HoleIndexTable')
     }
   }
 }

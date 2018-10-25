@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, TextInput, ScrollView, InputItem} from 'react-native';
 import store from '../store'
 import { connect } from "react-redux"
-import { List, Button, WhiteSpace, Radio } from 'antd-mobile-rn'
+import { List, Button, WhiteSpace, Checkbox } from 'antd-mobile-rn'
+import { findMaxAndMin } from '../util'
 
-const RadioItem = Radio.RadioItem
+const CheckboxItem = Checkbox.CheckboxItem
 
 class HoleIndex extends Component {
   static navigationOptions = {
@@ -17,7 +18,7 @@ class HoleIndex extends Component {
 
   render() {
     let {
-      topLinePointChange, holesGPSChange, holesNumberChange, 
+      topLinePointChange, holesGPSChange, holesNumberChange, navigation,
       holesLChange, resistLineLChange, onOk, topLinePoints, addHole, 
       addPoint, holes, resistLine, focusRender, radioData, holeTypeChange
     } = this.props
@@ -34,7 +35,7 @@ class HoleIndex extends Component {
                 value={item.GPS}
                 placeholder="测点GPS"
               />
-            }) }
+            })}
           </List>          
         </View>
         <Button onClick={addPoint} type="primary" style={styles.button}>
@@ -45,13 +46,13 @@ class HoleIndex extends Component {
             <Text style={styles.inputTitle}>炮孔参数：</Text>
             <List renderHeader={() => '炮孔类型'} style={{marginBottom: 20,fontSize: 50}}>
               {radioData.map(i => (
-                <RadioItem 
+                <CheckboxItem 
                   key={i.value} 
-                  checked={item.type === i.value}
+                  checked={item.type.indexOf(i.value) != -1}
                   onChange={() => holeTypeChange(i.value, index)}
                   style={styles.typeRadio}>
                   <Text style={{fontSize: 25}}>{i.value}</Text>
-                </RadioItem>
+                </CheckboxItem>
               ))}
             </List>
             <List style={styles.list}>
@@ -85,7 +86,7 @@ class HoleIndex extends Component {
         <Button onClick={addHole} type="primary" style={styles.button}>
           <Text style={{fontSize:30}}>增加炮孔</Text>
         </Button>
-        <Button onClick={onOk} type="primary" style={styles.button}>
+        <Button onClick={() => onOk(navigation)} type="primary" style={styles.button}>
           <Text style={{fontSize:30}}>生成炮孔布置示意图</Text>
         </Button>
       </ScrollView>
@@ -116,10 +117,24 @@ let mapDispatchToProps = dispatch => {
     addHole: () => {
       let state = store.getState()
       let { holes, focusRender } = state.holeIndex
-      holes.push({
+      holes.push({    
         number: '',
         GPS: '',
-        l: ''
+        resistLine: '',
+        type: '',
+        q: '',
+        Q: '',
+        Q2: '',
+        W: '',
+        b: '',
+        a: '',
+        l: '',
+        h: '',
+        mediCount: '',
+        mediLen: '',
+        fillLen: '',
+        x: '',
+        y: ''
       })
       dispatch({
         type: "SET_HOLE_INDEX",
@@ -198,7 +213,12 @@ let mapDispatchToProps = dispatch => {
     holeTypeChange: (value, index) => {
       let state = store.getState()
       let { holes, focusRender } = state.holeIndex
-      holes[index].type = value
+      let typeIndex = holes[index].type.indexOf(value)
+      if (typeIndex != -1) {
+        holes[index].type.splice(typeIndex, 1)
+      } else {
+        holes[index].type.push(value)
+      }
       dispatch({
         type: "SET_HOLE_INDEX",
         holeIndex: {
@@ -208,7 +228,42 @@ let mapDispatchToProps = dispatch => {
         }
       })
     },
-    onOk: () => {}
+    onOk: (navigation) => {
+      let state = store.getState()
+      let { holes, topLinePoints } = state.holeIndex
+      let longitudes = [], latitudes = [], holesLen = holes.length
+      holes.map(item => {
+        let Gps = item.GPS.split(' ')
+        longitudes.push(Number(Gps[0]).toFixed(7))
+        latitudes.push(Number(Gps[1]).toFixed(7))
+      })
+      topLinePoints.map(item => {
+        let Gps = item.GPS.split(' ')
+        longitudes.push(Number(Gps[0]).toFixed(7))
+        latitudes.push(Number(Gps[1]).toFixed(7))
+      })
+      let longMaxMin = findMaxAndMin(longitudes)
+      let maxLong = longMaxMin.max, minLong= longMaxMin.min
+      let latiMaxMin = findMaxAndMin(latitudes)
+      let minLati = latiMaxMin.min
+      let unit = Number(700 / ((maxLong-minLong) * 10000000)).toFixed(1)  // 比例尺
+      holes.forEach((item, index) => {
+        item.x = Number(((longitudes[index] - minLong)*10000000*unit).toFixed(1)) + 50
+        item.y = Number(((latitudes[index] - minLati)*10000000*unit).toFixed(1)) + 50
+      })
+      topLinePoints.forEach((item, index) => {
+        item.x = Number(((longitudes[index+holesLen] - minLong)*10000000*unit).toFixed(1)) + 50
+        item.y = Number(((latitudes[index+holesLen] - minLati)*10000000*unit).toFixed(1)) + 50
+      })
+      dispatch({
+        type: "SET_HOLE_INDEX",
+        holeIndex: {
+          ...state.holeIndex,
+          holes
+        }
+      })
+      navigation.navigate('Diagram')
+    }
   }
 }
 

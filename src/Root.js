@@ -10,7 +10,7 @@ import HoleIndexTable from './components/HoleIndexTable'
 import Diagram from './components/Diagram'
 
 const Root = createStackNavigator({
-  Home: { screen: Diagram },
+  Home: { screen: Home },
   HoleIndexTable: { screen: HoleIndexTable },
   HoleIndex: { screen: HoleIndex },
   BlastIndexDesign: { screen: BlastIndexDesign },

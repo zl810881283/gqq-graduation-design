@@ -1,21 +1,16 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux"
-import store from '../store'
 import { StyleSheet, ScrollView} from 'react-native';
 import Svg,{ Circle, Path, Text, TSpan, G} from 'react-native-svg'
-import { findMaxAndMin } from '../util'
+import { Button } from 'antd-mobile-rn'
 
 class Diagram extends Component {
   static navigationOptions = {
     title: '炮孔示意图'
   }
 
-  componentWillMount() {
-    this.props.initGpsData()
-  }
-
   render() {
-    let { holes, topLinePoints } = this.props
+    let { holes, topLinePoints, navigation } = this.props
     let topLinePath = ''
     for (let i = 0;i < topLinePoints.length;i++) {
       if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
@@ -24,8 +19,8 @@ class Diagram extends Component {
     return (
       <ScrollView>
         <Svg
-          height="1000"
-          width="1000"
+          height="1200"
+          width="800"
         >
           {holes.map((item, index) => {
             return <G key={item.number}>
@@ -33,11 +28,14 @@ class Diagram extends Component {
               <Text x={item.x-8} y={item.y+10} fontSize="30">
                 <TSpan>{item.number}</TSpan>
               </Text>
-              { index !== 0 ? <Path d={`M ${holes[index-1].x} ${holes[index-1].y} L ${item.x} ${item.y}`} stroke="black" /> : null }
+              { index !== 0 && item.type.indexOf('首排炮孔')!=-1 ? <Path d={`M ${holes[index-1].x} ${holes[index-1].y} L ${item.x} ${item.y}`} stroke="black" /> : null }
             </G>
           })}
           <Path d={topLinePath} stroke="black" fill="none"/>
         </Svg>
+        {/* <Button onClick={() => navigation.navigate('Home')} type="primary" style={styles.button}>
+          <Text style={{fontSize:20}}>返回主页</Text>
+        </Button> */}
       </ScrollView>
     )
   }
@@ -49,52 +47,14 @@ let mapStateToProps = state => {
 
 let mapDispatchToProps = dispatch => {
   return {
-    initGpsData: () => {
-      let state = store.getState()
-      let { holes, topLinePoints } = state.holeIndex
-      let longitudes = [], latitudes = [], holesLen = holes.length
-      holes = holes.sort((a, b) => {      // 根据经度进行升序排序
-        let aLong = a.GPS.split(' ')[0]
-        let bLong = b.GPS.split(' ')[0]
-        return aLong - bLong
-      })
-      topLinePoints = topLinePoints.sort((a, b) => {    // 根据经度进行升序排序
-        let aLong = a.GPS.split(' ')[0]
-        let bLong = b.GPS.split(' ')[0]
-        return aLong - bLong
-      })
-      holes.map(item => {
-        let Gps = item.GPS.split(' ')
-        longitudes.push(Number(Gps[0]).toFixed(7))
-        latitudes.push(Number(Gps[1]).toFixed(7))
-      })
-      topLinePoints.map(item => {
-        let Gps = item.GPS.split(' ')
-        longitudes.push(Number(Gps[0]).toFixed(7))
-        latitudes.push(Number(Gps[1]).toFixed(7))
-      })
-      let longMaxMin = findMaxAndMin(longitudes)
-      let maxLong = longMaxMin.max, minLong= longMaxMin.min
-      let latiMaxMin = findMaxAndMin(latitudes)
-      let minLati = latiMaxMin.min
-      let unit = Number(700 / ((maxLong-minLong) * 10000000)).toFixed(1)  // 比例尺
-      holes.forEach((item, index) => {
-        item.x = Number(((longitudes[index] - minLong)*10000000*unit).toFixed(1)) + 50
-        item.y = Number(((latitudes[index] - minLati)*10000000*unit).toFixed(1)) + 50
-      })
-      topLinePoints.forEach((item, index) => {
-        item.x = Number(((longitudes[index+holesLen] - minLong)*10000000*unit).toFixed(1)) + 50
-        item.y = Number(((latitudes[index+holesLen] - minLati)*10000000*unit).toFixed(1)) + 50
-      })
-      dispatch({
-        type: "SET_HOLE_INDEX",
-        holeIndex: {
-          ...state.holeIndex,
-          holes
-        }
-      })
-    }
   }
 }
+
+const styles = StyleSheet.create({
+  button: {
+    height: 40,
+    margin: 30
+  }
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Diagram)
