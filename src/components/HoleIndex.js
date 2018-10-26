@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView, InputItem} from 'react-native';
+import { StyleSheet, Text, View, TextInput, ScrollView} from 'react-native';
 import store from '../store'
 import { connect } from "react-redux"
-import { List, Button, WhiteSpace, Checkbox } from 'antd-mobile-rn'
+import { List, Button, WhiteSpace, Checkbox, InputItem } from 'antd-mobile-rn'
 import { findMaxAndMin } from '../util'
 
 const CheckboxItem = Checkbox.CheckboxItem
@@ -126,6 +126,8 @@ let mapDispatchToProps = dispatch => {
       let { holes, focusRender } = state.holeIndex
       holes.push({    
         number: '',
+        parentNumber: '',
+        detonator: '',
         GPS: '',
         resistLine: '',
         type: '',

@@ -27,6 +27,8 @@ const initialState = {
     holes: [
       {
         number: '1',
+        parentNumber: '',
+        detonator: '',
         GPS: '132.6666677 22.1231235',
         resistLine: '',
         type: ['边角炮孔', '首排炮孔'],
@@ -46,6 +48,8 @@ const initialState = {
       },
       {
         number: '2',
+        parentNumber: '',
+        detonator: '',
         GPS: '132.6666680 22.1231256',
         resistLine: '',
         type: ['首排炮孔'],
@@ -65,6 +69,8 @@ const initialState = {
       },
       {
         number: '3',
+        parentNumber: '',
+        detonator: '',
         GPS: '132.6666682 22.1231274',
         resistLine: '',
         type: ['首排炮孔', '边角炮孔'],
@@ -84,6 +90,8 @@ const initialState = {
       },
       {
         number: '4',
+        parentNumber: '',
+        detonator: '',
         GPS: '132.6666656 22.1231292',
         resistLine: '',
         type: ['边角炮孔'],
@@ -113,6 +121,13 @@ const initialState = {
     tableHead: ['孔号', '抵抗线W(m)', '排距b(m)', '孔距a(m)', '孔深l(m)', '超深h(m)', '设计单耗q(kg/m3)', '设计装药量Q(kg)', "调整装药量Q'(kg)", '药卷数量(支)', '装药长度(m)', '填塞长度(m)'],
     tableData: [],
     focusRender: false
+  },
+  gridIndex: {
+    detonators: [
+      { value: '25ms' },
+      { value: '42ms' },
+      { value: '65ms' },
+    ]
   }
 }
 
