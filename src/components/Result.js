@@ -13,10 +13,32 @@ class Result extends Component {
     let parentNumber = holes[index].parentNumber
     if (parentNumber === '') return null
     let parentIndex = holes.findIndex(item => item.number === parentNumber)
-    let parentHole = holes[parentIndex], childHole = holes[index], strokeDasharray = 0
+    let parentHole = holes[parentIndex], childHole = holes[index]
+    // 计算箭头两点的位置
+    let dx = Math.abs(parentHole.x-childHole.x)
+    let dy = Math.abs(parentHole.y-childHole.y)
+    let theta = Math.atan(dy/dx)
+    theta *= 180 / Math.PI
+    let angle = parentHole.x-childHole.x < 0 ? theta-90 : 90-theta
+    let p1 = {
+      x: parentHole.x-childHole.x > 0 ? childHole.x + 15*1: childHole.x - 15*1,
+      y: parentHole.y-childHole.y > 0 ? childHole.y + 30 : childHole.y - 30 
+    }
+    let p2 = {
+      x: parentHole.x-childHole.x < 0 ? childHole.x + 15*1 : childHole.x - 15*1,
+      y: parentHole.y-childHole.y > 0 ? childHole.y + 30 : childHole.y - 30
+    }
+    // 根据雷管类型绘制不同的路径线
+    let strokeDasharray = 0
     if (childHole.detonator === '25ms') strokeDasharray = 5
     if (childHole.detonator === '42ms') strokeDasharray = 15
-    return <Path d={`M ${parentHole.x} ${parentHole.y} L ${childHole.x} ${childHole.y}`} stroke="black" strokeDasharray={strokeDasharray} />
+    return (
+      <G key={index}>
+        <Path d={`M ${parentHole.x} ${parentHole.y} L ${childHole.x} ${childHole.y}`} stroke="black" strokeDasharray={strokeDasharray} />
+        <Path transform={`rotate(${angle},${childHole.x},${childHole.y})`} d={`M ${childHole.x} ${childHole.y} L ${p1.x} ${p1.y}`} stroke="black" />
+        <Path transform={`rotate(${angle},${childHole.x},${childHole.y})`} d={`M ${childHole.x} ${childHole.y} L ${p2.x} ${p2.y}`} stroke="black" />
+      </G>
+    )
   }
 
   render() {
@@ -31,7 +53,7 @@ class Result extends Component {
         <Svg
           height="1200"
           width="800"
-        >
+         >
           {holes.map((item, index) => {
             return <G key={item.number}>
               <Circle cx={item.x} cy={item.y} r="20" fill="white" stroke="black" />

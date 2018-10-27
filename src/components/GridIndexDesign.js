@@ -35,7 +35,7 @@ class GridIndexDesign extends Component {
                 </RadioItem>
               ))}
             </List>
-          </View>  
+          </View>
         })}
         <Button onClick={() => onOk(navigation)} type="primary" style={styles.button}>
           <Text style={{fontSize:30}}>完成</Text>
