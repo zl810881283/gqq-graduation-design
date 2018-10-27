@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux"
-import { StyleSheet, ScrollView} from 'react-native';
-import Svg,{ Circle, Path, Text, TSpan, G} from 'react-native-svg'
+import Svg,{ Circle, Path, TSpan, G, Text as SvgText} from 'react-native-svg'
+import { StyleSheet, ScrollView, View, Text} from 'react-native';
 import { Button } from 'antd-mobile-rn'
+import { Table, Row } from 'react-native-table-component'
 
 class Result extends Component {
   static navigationOptions = {
@@ -42,7 +43,7 @@ class Result extends Component {
   }
 
   render() {
-    let { holes, topLinePoints, navigation } = this.props
+    let { holes, topLinePoints, navigation, table1Head, table1Data } = this.props
     let topLinePath = ''
     for (let i = 0;i < topLinePoints.length;i++) {
       if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
@@ -57,24 +58,34 @@ class Result extends Component {
           {holes.map((item, index) => {
             return <G key={item.number}>
               <Circle cx={item.x} cy={item.y} r="20" fill="white" stroke="black" />
-              <Text x={item.x-8} y={item.y+10} fontSize="30">
+              <SvgText x={item.x-8} y={item.y+10} fontSize="30">
                 <TSpan>{item.number}</TSpan>
-              </Text>
+              </SvgText>
+              <SvgText x={item.x-50} y={item.y+8} fontSize="20">
+                <TSpan>{item.l}</TSpan>
+              </SvgText>
               {this.getPath(index,holes)}
             </G>
           })}
           <Path d={topLinePath} stroke="black" fill="none"/>
         </Svg>
-        {/* <Button onClick={() => navigation.navigate('Home')} type="primary" style={styles.button}>
-          <Text style={{fontSize:20}}>返回主页</Text>
-        </Button> */}
+        <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
+          <Row data={table1Head}></Row>
+          <Row data={table1Data}></Row>
+        </Table>
+        <Button onClick={() => navigation.navigate('Home')} type="primary" style={styles.button}>
+          <Text style={{fontSize:30}}>返回主页</Text>
+        </Button>
       </ScrollView>
     )
   }
 }
 
 let mapStateToProps = state => {
-  return state.holeIndex
+  return {
+    ...state.holeIndex,
+    ...state.gridIndex
+  }
 }
 
 let mapDispatchToProps = dispatch => {
@@ -84,8 +95,12 @@ let mapDispatchToProps = dispatch => {
 
 const styles = StyleSheet.create({
   button: {
-    height: 40,
-    margin: 30
+    marginLeft: 30,
+    marginRight: 30,
+    marginBottom: 30
+  },
+  table: {
+    marginBottom: 30
   }
 });
 

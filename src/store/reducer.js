@@ -127,7 +127,9 @@ const initialState = {
       { value: '25ms' },
       { value: '42ms' },
       { value: '65ms' },
-    ]
+    ],
+    table1Head: ['爆破器材', '乳化炸药(kg)', '多孔粒状炸药(kg)', '400ms雷管(发)', '25ms雷管(发)', '42ms雷管(发)', '65ms雷管(发)', '导爆索(米)', '导爆管(米)'],
+    table1Data: ['合计', '', '', '', '', '', '', '', '300' ],
   }
 }
 
@@ -148,6 +150,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         holeIndexTable: action.holeIndexTable
       }
+      case 'SET_GRID_INDEX':
+      return {
+        ...state,
+        gridIndex: action.gridIndex
+      }      
     default:
       return state;
   }
