@@ -85,14 +85,17 @@ let mapDispatchToProps = dispatch => {
       let state = store.getState()
       let { holes } = state.holeIndex
       let { gridIndex } = state
-      let { table1Data } = gridIndex
+      let { table1Data, table2Data, table2Head } = gridIndex
       // 乳化炸药、ms25、ms42、ms65
       let power1 = '', ms25 = 0, ms42 = 0, ms65 = 0, allL = 0
       for (let i = 0;i < holes.length;i++) {
         allL += Number(holes[i].l)
+        table2Head.push(holes[i].number)
         if (holes[i].Q2 != '') {
+          table2Data.push(holes[i].Q2+'kg')
           power1 = Number(power1)+Number(holes[i].Q2)
         } else {
+          table2Data.push(holes[i].Q+'kg')
           power1 = Number(power1)+Number(holes[i].Q)
         }
         if (holes[i].detonator === '25ms') ms25++

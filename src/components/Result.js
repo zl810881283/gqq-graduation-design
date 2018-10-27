@@ -43,7 +43,7 @@ class Result extends Component {
   }
 
   render() {
-    let { holes, topLinePoints, navigation, table1Head, table1Data } = this.props
+    let { holes, topLinePoints, navigation, table1Head, table1Data, table2Head, table2Data } = this.props
     let topLinePath = ''
     for (let i = 0;i < topLinePoints.length;i++) {
       if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
@@ -72,6 +72,10 @@ class Result extends Component {
         <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
           <Row data={table1Head}></Row>
           <Row data={table1Data}></Row>
+        </Table>
+        <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
+          <Row data={table2Head}></Row>
+          <Row data={table2Data}></Row>
         </Table>
         <Button onClick={() => navigation.navigate('Home')} type="primary" style={styles.button}>
           <Text style={{fontSize:30}}>返回主页</Text>
