@@ -11,7 +11,7 @@ class GridIndexDesign extends Component {
     title: '起爆网络设计'
   }
   render() {
-    let {holes, detonators, parentNumberChange, detonatorChange, focusRender} = this.props
+    let {holes, detonators, parentNumberChange, detonatorChange, onOk, navigation, focusRender} = this.props
     return (
       <ScrollView style={styles.container}>
         {holes.map((item, index) => {
@@ -82,7 +82,7 @@ let mapDispatchToProps = dispatch => {
       })
     },
     onOk: (navigation) => {
-      
+      navigation.navigate('Result')
     }
   }
 }

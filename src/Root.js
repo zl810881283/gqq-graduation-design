@@ -8,6 +8,7 @@ import GridIndexDesign from './components/GridIndexDesign'
 import HistoryRecords from './components/HistoryRecords'
 import HoleIndexTable from './components/HoleIndexTable'
 import Diagram from './components/Diagram'
+import Result from './components/Result'
 
 const Root = createStackNavigator({
   Home: { screen: Home },
@@ -16,7 +17,8 @@ const Root = createStackNavigator({
   BlastIndexDesign: { screen: BlastIndexDesign },
   GridIndexDesign: { screen: GridIndexDesign },
   HistoryRecords: { screen: HistoryRecords },
-  Diagram: { screen: Diagram }
+  Diagram: { screen: Diagram },
+  Result: { screen: Result }
 });
 
 export default Root;

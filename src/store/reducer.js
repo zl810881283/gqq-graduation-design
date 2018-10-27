@@ -28,7 +28,7 @@ const initialState = {
       {
         number: '1',
         parentNumber: '',
-        detonator: '',
+        detonator: '25ms',
         GPS: '132.6666677 22.1231235',
         resistLine: '',
         type: ['边角炮孔', '首排炮孔'],
@@ -48,8 +48,8 @@ const initialState = {
       },
       {
         number: '2',
-        parentNumber: '',
-        detonator: '',
+        parentNumber: '1',
+        detonator: '25ms',
         GPS: '132.6666680 22.1231256',
         resistLine: '',
         type: ['首排炮孔'],
@@ -69,8 +69,8 @@ const initialState = {
       },
       {
         number: '3',
-        parentNumber: '',
-        detonator: '',
+        parentNumber: '2',
+        detonator: '25ms',
         GPS: '132.6666682 22.1231274',
         resistLine: '',
         type: ['首排炮孔', '边角炮孔'],
@@ -90,8 +90,8 @@ const initialState = {
       },
       {
         number: '4',
-        parentNumber: '',
-        detonator: '',
+        parentNumber: '3',
+        detonator: '65ms',
         GPS: '132.6666656 22.1231292',
         resistLine: '',
         type: ['边角炮孔'],
