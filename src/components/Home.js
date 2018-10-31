@@ -2,10 +2,21 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 import { connect } from "react-redux"
 import { Button, WhiteSpace, WingBlank } from 'antd-mobile-rn'
+import store from '../store'
 
 class Home extends Component {
   static navigationOptions = {
     title: '主页'
+  }
+
+  componentWillMount() {
+    storage.getAllDataForKey('records').then(records => {
+      console.error(records.id)
+      store.dispatch({
+        type: 'SET_RECORDS',
+        records
+      })
+    })
   }
 
   render() {

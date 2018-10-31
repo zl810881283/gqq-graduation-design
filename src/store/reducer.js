@@ -1,4 +1,5 @@
 const initialState = {
+  name: '',
 	holeIndex: {
     focusRender: false,
     radioData: [
@@ -132,7 +133,8 @@ const initialState = {
     table1Data: ['合计', '', '', '', '', '', '', '', '300' ],
     table2Head: ['孔号'],
     table2Data: ['装药量']
-  }
+  },
+  records: []
 }
 
 const reducer = (state = initialState, action) => {
@@ -152,11 +154,21 @@ const reducer = (state = initialState, action) => {
         ...state,
         holeIndexTable: action.holeIndexTable
       }
-      case 'SET_GRID_INDEX':
+    case 'SET_GRID_INDEX':
       return {
         ...state,
         gridIndex: action.gridIndex
-      }      
+      }
+    case 'SET_NAME':
+      return {
+        ...state,
+        name: action.name
+    }      
+    case 'SET_RECORDS':
+      return {
+        ...state,
+        records: action.records
+    }          
     default:
       return state;
   }

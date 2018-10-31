@@ -9,6 +9,21 @@ import HistoryRecords from './components/HistoryRecords'
 import HoleIndexTable from './components/HoleIndexTable'
 import Diagram from './components/Diagram'
 import Result from './components/Result'
+import Storage from 'react-native-storage'
+import {AsyncStorage} from 'react-native'
+
+var storage = new Storage({
+  size: 1000,
+  storageBackend: AsyncStorage,
+  defaultExpires: null,
+  enableCache: true,
+  sync: {
+    records: () => {
+      return []
+    }
+  }
+})
+global.storage = storage
 
 const Root = createStackNavigator({
   Home: { screen: Home },

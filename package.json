@@ -13,6 +13,7 @@
     "react-art": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-native": "^0.57.1",
+    "react-native-storage": "^0.2.3",
     "react-native-svg": "^8.0.3",
     "react-native-table-component": "^1.1.8",
     "react-navigation": "^2.18.0",

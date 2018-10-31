@@ -37,7 +37,7 @@ class HoleIndex extends Component {
                 placeholder="测点GPS"
               />
             })}
-          </List>          
+          </List>  
         </View>
         <Button onClick={addPoint} type="primary" style={styles.button}>
           <Text style={{fontSize:30}}>增加测点</Text>

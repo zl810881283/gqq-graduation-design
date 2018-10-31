@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux"
 import Svg,{ Circle, Path, TSpan, G, Text as SvgText} from 'react-native-svg'
-import { StyleSheet, ScrollView, View, Text} from 'react-native';
-import { Button } from 'antd-mobile-rn'
+import { StyleSheet, ScrollView, View, Text, TextInput} from 'react-native';
+import { Button, List, Toast } from 'antd-mobile-rn'
 import { Table, Row } from 'react-native-table-component'
+import store from '../store'
 
 class Result extends Component {
   static navigationOptions = {
@@ -43,7 +44,7 @@ class Result extends Component {
   }
 
   render() {
-    let { holes, topLinePoints, navigation, table1Head, table1Data, table2Head, table2Data } = this.props
+    let { holes, topLinePoints, navigation, table1Head, table1Data, table2Head, table2Data, save, nameChange, name} = this.props
     let topLinePath = ''
     for (let i = 0;i < topLinePoints.length;i++) {
       if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
@@ -77,6 +78,17 @@ class Result extends Component {
           <Row data={table2Head}></Row>
           <Row data={table2Data}></Row>
         </Table>
+        <List style={styles.list}>
+          <TextInput
+            onChangeText={value => nameChange(value)}
+            style={styles.textInput}
+            value={name}
+            placeholder="输入名称"
+          />
+        </List> 
+        <Button onClick={save} type="primary" style={styles.button}>
+          <Text style={{fontSize:30}}>保存</Text>
+        </Button>
         <Button onClick={() => navigation.navigate('Home')} type="primary" style={styles.button}>
           <Text style={{fontSize:30}}>返回主页</Text>
         </Button>
@@ -88,12 +100,34 @@ class Result extends Component {
 let mapStateToProps = state => {
   return {
     ...state.holeIndex,
-    ...state.gridIndex
+    ...state.gridIndex,
+    name: state.name
   }
 }
 
 let mapDispatchToProps = dispatch => {
   return {
+    save: () => {
+      let state = store.getState()
+      let {name, records, holeIndex} = state
+      if (name === '') return Toast.info('请先填写名称！', 1)
+      if (records.find(item => item.name === name)) return Toast.info('名称已存在！', 1)
+      storage.save({
+        key: 'records',
+        id: name,
+        data: {
+          name,
+          holeIndex,
+        }
+      })
+      Toast.info('保存成功', 1)
+    },
+    nameChange: value => {
+      dispatch({
+        type: 'SET_NAME',
+        name: value
+      })
+    }
   }
 }
 
@@ -105,7 +139,16 @@ const styles = StyleSheet.create({
   },
   table: {
     marginBottom: 30
-  }
+  },
+  textInput: {
+    height:80,
+    fontSize:30,
+    marginLeft: 20,
+  },
+  list: {
+    height: 80,
+    marginBottom: 20
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Result)
