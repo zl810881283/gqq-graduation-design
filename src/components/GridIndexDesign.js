@@ -17,7 +17,7 @@ class GridIndexDesign extends Component {
         {holes.map((item, index) => {
           return <View key={index}>
             <Text style={styles.inputTitle}>炮孔编号：{item.number}</Text>
-            <List style={{marginBottom:20}}>
+            <List style={{marginBottom:10}}>
               <TextInput
                 onChangeText={value => parentNumberChange(value, index)}
                 style={styles.textInput}
@@ -31,14 +31,14 @@ class GridIndexDesign extends Component {
                   key={i.value} 
                   checked={i.value === item.detonator}
                   onChange={() => detonatorChange(i.value, index)}>
-                  <Text style={{fontSize: 25}}>{i.value}</Text>
+                  <Text style={{fontSize: 12}}>{i.value}</Text>
                 </RadioItem>
               ))}
             </List>
           </View>
         })}
         <Button onClick={() => onOk(navigation)} type="primary" style={styles.button}>
-          <Text style={{fontSize:30}}>完成</Text>
+          <Text style={{fontSize:15}}>完成</Text>
         </Button>
       </ScrollView>
     );
@@ -115,29 +115,30 @@ let mapDispatchToProps = dispatch => {
 
 const styles = StyleSheet.create({
   container: {
-    fontSize: 20
+    fontSize: 10
   },
   list: {
-    height: 80,
-    marginBottom: 20
+    height: 40,
+    marginBottom: 10
   },
   inputTitle: {
-    fontSize: 30,
-    margin: 20
+    fontSize: 15,
+    margin: 10
   },
   textInput: {
-    height:80,
-    fontSize:30,
-    marginLeft: 20,
+    height:40,
+    fontSize:15,
+    marginLeft: 10,
   },
   holeTextInputs: {
-    marginBottom: 240
+    marginBottom: 120
   },
   button: {
-    margin: 30
+    margin: 15,
+    height: 30
   },
   typeRadio: {
-    height: 50
+    height: 25
   }
 });
 

@@ -16,23 +16,26 @@ class HoleIndexTable extends Component {
     }
     return (
       <ScrollView>
-        <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-          <Row data={tableHead}/>
-          {
-            tableData.map((rowData, index) => (
-              <TableWrapper key={index} style={styles.row}>
-                {
-                  rowData.map((cellData, cellIndex) => (
-                    <Cell 
-                    key={cellIndex} 
-                    data={cellIndex === 8 ? Q2Input(cellData, index) : (cellIndex === 11 ? fillLenInput(cellData, index) : cellData)} 
-                    textStyle={styles.text}/>
-                  ))
-                }
-              </TableWrapper>
-            ))
-          }
-        </Table>
+        <ScrollView horizontal={true}>
+          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+            <Row data={tableHead} widthArr={[75,75,75,75,75,75,75,75,75,75,75,75]}/>
+            {
+              tableData.map((rowData, index) => (
+                <TableWrapper key={index} style={styles.row}>
+                  {
+                    rowData.map((cellData, cellIndex) => (
+                      <Cell 
+                      style={{width:75}}
+                      key={cellIndex} 
+                      data={cellIndex === 8 ? Q2Input(cellData, index) : (cellIndex === 11 ? fillLenInput(cellData, index) : cellData)} 
+                      textStyle={styles.text}/>
+                    ))
+                  }
+                </TableWrapper>
+              ))
+            }
+          </Table>
+        </ScrollView>
         <Button onClick={() => this.props.navigation.navigate('Home')} type="primary" style={styles.button}>
           <Text style={{fontSize:20}}>返回主页</Text>
         </Button>

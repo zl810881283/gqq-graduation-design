@@ -15,16 +15,16 @@ class HistoryRecords extends Component {
       <ScrollView style={styles.container}>
         <Flex>
           <Flex.Item>
-            <Text>名称</Text>
+            <Text style={styles.header}>名称</Text>
           </Flex.Item>
           <Flex.Item>
-            <Text>操作</Text>
+            <Text style={styles.header}>操作</Text>
           </Flex.Item>
         </Flex>
         {records.map((item, index) => (
           <Flex key={item.name}>
             <Flex.Item>
-              <Text>{item.name}</Text>
+              <Text style={styles.header}>{item.name}</Text>
             </Flex.Item>
             <Flex.Item>
               <Flex justify="start">
@@ -43,7 +43,13 @@ class HistoryRecords extends Component {
 const styles = StyleSheet.create({
   container: {},
   button: {
-    width: 100,
+    width: 75,
+    height: 30,
+    marginLeft:10
+  },
+  header: {
+    fontSize: 20,
+    marginLeft: 10
   }
 });
 

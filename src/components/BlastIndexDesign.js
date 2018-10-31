@@ -17,7 +17,7 @@ class BlastIndexDesign extends Component {
         {holes.map((item, index) => {
           return <View key={index}>
             <Text style={styles.inputTitle}>炮孔编号：{item.number}</Text>
-            <List style={{marginBottom:20}}>
+            <List style={{marginBottom:10}}>
               <TextInput
                 onChangeText={value => qChange(value, index)}
                 style={styles.textInput}
@@ -55,7 +55,7 @@ class BlastIndexDesign extends Component {
           />
         </List>
         <Button onClick={() => onOk(navigation)} type="primary" style={styles.button}>
-          <Text style={{fontSize:30}}>生成炮孔参数设计表</Text>
+          <Text style={{fontSize:15}}>生成炮孔参数设计表</Text>
         </Button>
       </ScrollView>
     );
@@ -204,28 +204,29 @@ let mapDispatchToProps = dispatch => {
 
 const styles = StyleSheet.create({
   container: {
-    fontSize: 20
+    fontSize: 10
   },
   list: {
-    height: 80,
-    marginBottom: 350
+    height: 40,
+    marginBottom: 175
   },
   inputTitle: {
-    fontSize: 30,
-    margin: 20
+    fontSize: 15,
+    margin: 10
   },
   textInput: {
-    height:80,
-    fontSize:30,
-    marginLeft: 20,
+    height:40,
+    fontSize:15,
+    marginLeft: 10,
   },
   holeTextInputs: {
-    marginBottom: 180
+    marginBottom: 90
   },
   button: {
-    marginLeft: 30,
-    marginRight: 30,
-    marginBottom: 30
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 15,
+    height: 35,
   }
 });
 

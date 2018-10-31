@@ -23,12 +23,12 @@ class Result extends Component {
     theta *= 180 / Math.PI
     let angle = parentHole.x-childHole.x < 0 ? theta-90 : 90-theta
     let p1 = {
-      x: parentHole.x-childHole.x > 0 ? childHole.x + 15*1: childHole.x - 15*1,
-      y: parentHole.y-childHole.y > 0 ? childHole.y + 30 : childHole.y - 30 
+      x: parentHole.x-childHole.x > 0 ? childHole.x + 5*1: childHole.x - 5*1,
+      y: parentHole.y-childHole.y > 0 ? childHole.y + 10 : childHole.y - 10 
     }
     let p2 = {
-      x: parentHole.x-childHole.x < 0 ? childHole.x + 15*1 : childHole.x - 15*1,
-      y: parentHole.y-childHole.y > 0 ? childHole.y + 30 : childHole.y - 30
+      x: parentHole.x-childHole.x < 0 ? childHole.x + 5*1 : childHole.x - 5*1,
+      y: parentHole.y-childHole.y > 0 ? childHole.y + 10 : childHole.y - 10
     }
     // 根据雷管类型绘制不同的路径线
     let strokeDasharray = 0
@@ -53,16 +53,16 @@ class Result extends Component {
     return (
       <ScrollView>
         <Svg
-          height="1200"
-          width="800"
+          height="700"
+          width="350"
          >
           {holes.map((item, index) => {
             return <G key={item.number}>
-              <Circle cx={item.x} cy={item.y} r="20" fill="white" stroke="black" />
-              <SvgText x={item.x-8} y={item.y+10} fontSize="30">
+              <Circle cx={item.x} cy={item.y} r="10" fill="white" stroke="black" />
+              <SvgText x={item.x-4} y={item.y+5} fontSize="15">
                 <TSpan>{item.number}</TSpan>
               </SvgText>
-              <SvgText x={item.x-50} y={item.y+8} fontSize="20">
+              <SvgText x={item.x-25} y={item.y+4} fontSize="10">
                 <TSpan>{item.l}</TSpan>
               </SvgText>
               {this.getPath(index,holes)}
@@ -70,14 +70,18 @@ class Result extends Component {
           })}
           <Path d={topLinePath} stroke="black" fill="none"/>
         </Svg>
-        <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
-          <Row data={table1Head}></Row>
-          <Row data={table1Data}></Row>
-        </Table>
-        <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
-          <Row data={table2Head}></Row>
-          <Row data={table2Data}></Row>
-        </Table>
+        <ScrollView horizontal={true}>
+          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
+            <Row data={table1Head} widthArr={[75,75,75,75,75,75,75,75,75]}></Row>
+            <Row data={table1Data} widthArr={[75,75,75,75,75,75,75,75,75]}></Row>
+          </Table>
+        </ScrollView>
+        <ScrollView horizontal={true}>
+          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
+            <Row data={table2Head} widthArr={[75,75,75,75,75,75,75,75,75]}></Row>
+            <Row data={table2Data} widthArr={[75,75,75,75,75,75,75,75,75]}></Row>
+          </Table>
+        </ScrollView>
         <List style={styles.list}>
           <TextInput
             onChangeText={value => nameChange(value)}
@@ -87,10 +91,10 @@ class Result extends Component {
           />
         </List> 
         <Button onClick={save} type="primary" style={styles.button}>
-          <Text style={{fontSize:30}}>保存</Text>
+          <Text style={{fontSize:15}}>保存</Text>
         </Button>
         <Button onClick={() => navigation.navigate('Home')} type="primary" style={styles.button}>
-          <Text style={{fontSize:30}}>返回主页</Text>
+          <Text style={{fontSize:15}}>返回主页</Text>
         </Button>
       </ScrollView>
     )
@@ -140,21 +144,22 @@ let mapDispatchToProps = dispatch => {
 
 const styles = StyleSheet.create({
   button: {
-    marginLeft: 30,
-    marginRight: 30,
-    marginBottom: 30
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 15,
+    height:30
   },
   table: {
-    marginBottom: 30
+    marginBottom: 15
   },
   textInput: {
-    height:80,
-    fontSize:30,
-    marginLeft: 20,
+    height:40,
+    fontSize:15,
+    marginLeft: 10,
   },
   list: {
-    height: 80,
-    marginBottom: 20
+    height: 40,
+    marginBottom: 10
   },
 });
 

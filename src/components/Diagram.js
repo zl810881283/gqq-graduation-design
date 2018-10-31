@@ -19,13 +19,13 @@ class Diagram extends Component {
     return (
       <ScrollView>
         <Svg
-          height="1200"
-          width="800"
+          height="700"
+          width="350"
         >
           {holes.map((item, index) => {
             return <G key={item.number}>
-              <Circle cx={item.x} cy={item.y} r="20" fill="white" stroke="black" />
-              <SvgText x={item.x-8} y={item.y+10} fontSize="30">
+              <Circle cx={item.x} cy={item.y} r="10" fill="white" stroke="black" />
+              <SvgText x={item.x-4} y={item.y+5} fontSize="15">
                 <TSpan>{item.number}</TSpan>
               </SvgText>
               { index !== 0 && item.type.indexOf('首排炮孔')!=-1 ? <Path d={`M ${holes[index-1].x} ${holes[index-1].y} L ${item.x} ${item.y}`} stroke="black" /> : null }
@@ -34,7 +34,7 @@ class Diagram extends Component {
           <Path d={topLinePath} stroke="black" fill="none"/>
         </Svg>
         <Button onClick={() => navigation.navigate('Home')} type="primary" style={styles.button}>
-          <Text style={{fontSize:20}}>返回主页</Text>
+          <Text style={{fontSize:15}}>返回主页</Text>
         </Button>
       </ScrollView>
     )
@@ -52,8 +52,8 @@ let mapDispatchToProps = dispatch => {
 
 const styles = StyleSheet.create({
   button: {
-    height: 40,
-    margin: 30
+    height: 25,
+    margin: 15
   }
 });
 

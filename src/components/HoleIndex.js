@@ -25,7 +25,7 @@ class HoleIndex extends Component {
     } = this.props
     return (
       <ScrollView style={styles.container}>
-        <View style={{marginBottom: (topLinePoints.length-1)*80+30}}>
+        <View style={{marginBottom: (topLinePoints.length-1)*40+15}}>
           <Text style={styles.inputTitle}>坡顶线测点处GPS数据：</Text>
           <List style={styles.list}>
             {topLinePoints.map((item, index) => {
@@ -40,22 +40,22 @@ class HoleIndex extends Component {
           </List>  
         </View>
         <Button onClick={addPoint} type="primary" style={styles.button}>
-          <Text style={{fontSize:30}}>增加测点</Text>
+          <Text style={{fontSize:15}}>增加测点</Text>
         </Button>
         <Button onClick={deletePoint} type="warning" style={styles.button}>
-          <Text style={{fontSize:30}}>删除测点</Text>
+          <Text style={{fontSize:15}}>删除测点</Text>
         </Button>
         {holes.map((item, index) => {
           return (<View key={index} style={styles.holeTextInputs}>
             <Text style={styles.inputTitle}>炮孔参数：</Text>
-            <List renderHeader={() => '炮孔类型'} style={{marginBottom: 20,fontSize: 50}}>
+            <List renderHeader={() => '炮孔类型'} style={{marginBottom: 10,fontSize: 25}}>
               {radioData.map(i => (
                 <CheckboxItem 
                   key={i.value} 
                   checked={item.type.indexOf(i.value) != -1}
                   onChange={() => holeTypeChange(i.value, index)}
                   style={styles.typeRadio}>
-                  <Text style={{fontSize: 25}}>{i.value}</Text>
+                  <Text style={{fontSize: 12}}>{i.value}</Text>
                 </CheckboxItem>
               ))}
             </List>
@@ -78,7 +78,7 @@ class HoleIndex extends Component {
                 value={item.l}
                 placeholder="孔深"
               />
-              {item.type === '首排炮孔' ? <TextInput
+              {item.type.indexOf('首排炮孔') != -1 ? <TextInput
                 onChangeText={value => resistLineLChange(value)}
                 style={styles.textInput}
                 value={resistLine}
@@ -88,13 +88,13 @@ class HoleIndex extends Component {
           </View>)
         })}
         <Button onClick={addHole} type="primary" style={styles.button}>
-          <Text style={{fontSize:30}}>增加炮孔</Text>
+          <Text style={{fontSize:15}}>增加炮孔</Text>
         </Button>
         <Button onClick={deleteHole} type="warning" style={styles.button}>
-          <Text style={{fontSize:30}}>删除炮孔</Text>
+          <Text style={{fontSize:15}}>删除炮孔</Text>
         </Button>
         <Button onClick={() => onOk(navigation)} type="primary" style={styles.button}>
-          <Text style={{fontSize:30}}>生成炮孔布置示意图</Text>
+          <Text style={{fontSize:15}}>生成炮孔布置示意图</Text>
         </Button>
       </ScrollView>
     );
@@ -287,14 +287,14 @@ let mapDispatchToProps = dispatch => {
       let maxLong = longMaxMin.max, minLong= longMaxMin.min
       let latiMaxMin = findMaxAndMin(latitudes)
       let minLati = latiMaxMin.min
-      let unit = Number(700 / ((maxLong-minLong) * 100)).toFixed(1)  // 比例尺
+      let unit = Number(300 / ((maxLong-minLong) * 100)).toFixed(1)  // 比例尺
       holes.forEach((item, index) => {
-        item.x = Number(((longitudes[index] - minLong)*100*unit).toFixed(1)) + 50
-        item.y = Number(((latitudes[index] - minLati)*100*unit).toFixed(1)) + 50
+        item.x = Number(((longitudes[index] - minLong)*100*unit).toFixed(1)) + 25
+        item.y = Number(((latitudes[index] - minLati)*100*unit).toFixed(1)) + 25
       })
       topLinePoints.forEach((item, index) => {
-        item.x = Number(((longitudes[index+holesLen] - minLong)*100*unit).toFixed(1)) + 50
-        item.y = Number(((latitudes[index+holesLen] - minLati)*100*unit).toFixed(1)) + 50
+        item.x = Number(((longitudes[index+holesLen] - minLong)*100*unit).toFixed(1)) + 25
+        item.y = Number(((latitudes[index+holesLen] - minLati)*100*unit).toFixed(1)) + 25
       })
       dispatch({
         type: "SET_HOLE_INDEX",
@@ -310,31 +310,32 @@ let mapDispatchToProps = dispatch => {
 
 const styles = StyleSheet.create({
   container: {
-    fontSize: 20
+    fontSize: 10
   },
   list: {
-    height: 80,
-    marginBottom: 20
+    height: 40,
+    marginBottom: 10
   },
   inputTitle: {
-    fontSize: 30,
-    margin: 20
+    fontSize: 15,
+    margin: 10
   },
   textInput: {
-    height:80,
-    fontSize:30,
-    marginLeft: 20,
+    height:40,
+    fontSize:15,
+    marginLeft: 10,
   },
   holeTextInputs: {
-    marginBottom: 240
+    marginBottom: 120
   },
   button: {
-    marginLeft: 30,
-    marginRight: 30,
-    marginBottom: 30
+    height:30,
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 15
   },
   typeRadio: {
-    height: 50
+    height: 25
   }
 });
 

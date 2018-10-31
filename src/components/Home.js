@@ -23,19 +23,19 @@ class Home extends Component {
         <Text style={styles.title}>露天矿垂直深孔爆破</Text>
         <WhiteSpace size='xl' />
         <Button onClick={() => this.props.navigation.navigate('HoleIndex')} type="primary" style={styles.button}>
-          <Text style={{fontSize:30}}>炮孔参数</Text>
+          <Text style={{fontSize:15}}>炮孔参数</Text>
         </Button><WhiteSpace />
         <WhiteSpace size='xl' />
         <Button onClick={() => this.props.navigation.navigate('BlastIndexDesign')} type="primary" style={styles.button}>
-          <Text style={{fontSize:30}}>爆破参数设计</Text>
+          <Text style={{fontSize:15}}>爆破参数设计</Text>
         </Button>
         <WhiteSpace size='xl' />
         <Button onClick={() => this.props.navigation.navigate('GridIndexDesign')} type="primary" style={styles.button}>
-          <Text style={{fontSize:30}}>起爆网络设计</Text>
+          <Text style={{fontSize:15}}>起爆网络设计</Text>
         </Button>
         <WhiteSpace size='xl' />
         <Button onClick={() => this.props.navigation.navigate('HistoryRecords')} type="primary" style={styles.button}>
-          <Text style={{fontSize:30}}>历史记录</Text>
+          <Text style={{fontSize:15}}>历史记录</Text>
         </Button>
       </WingBlank>
     );
@@ -44,14 +44,14 @@ class Home extends Component {
 
 const styles = StyleSheet.create({
   title: {
-    marginTop: 100,
-    fontSize: 40,
-    marginBottom: 30,
+    marginTop: 50,
+    fontSize: 20,
+    marginBottom: 15,
     textAlign: 'center'
   },
   button: {
-    height: 70,
-    marginBottom: 20
+    height: 35,
+    marginBottom: 10
   }
 });
 
