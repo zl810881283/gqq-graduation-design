@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, ScrollView} from 'react-native';
 import store from '../store'
 import { connect } from "react-redux"
 import { List, Button, WhiteSpace, Checkbox, InputItem } from 'antd-mobile-rn'
-import { findMaxAndMin } from '../util'
+import { findMaxAndMin, latLng2WebMercator } from '../util'
 
 const CheckboxItem = Checkbox.CheckboxItem
 
@@ -273,26 +273,28 @@ let mapDispatchToProps = dispatch => {
       let longitudes = [], latitudes = [], holesLen = holes.length
       holes.map(item => {
         let Gps = item.GPS.split(' ')
-        longitudes.push(Number(Gps[0]).toFixed(7))
-        latitudes.push(Number(Gps[1]).toFixed(7))
+        Gps = latLng2WebMercator(Gps[0], Gps[1])
+        longitudes.push(Number(Gps[0]).toFixed(2))
+        latitudes.push(Number(Gps[1]).toFixed(2))
       })
       topLinePoints.map(item => {
         let Gps = item.GPS.split(' ')
-        longitudes.push(Number(Gps[0]).toFixed(7))
-        latitudes.push(Number(Gps[1]).toFixed(7))
+        Gps = latLng2WebMercator(Gps[0], Gps[1])
+        longitudes.push(Number(Gps[0]).toFixed(2))
+        latitudes.push(Number(Gps[1]).toFixed(2))
       })
       let longMaxMin = findMaxAndMin(longitudes)
       let maxLong = longMaxMin.max, minLong= longMaxMin.min
       let latiMaxMin = findMaxAndMin(latitudes)
       let minLati = latiMaxMin.min
-      let unit = Number(700 / ((maxLong-minLong) * 10000000)).toFixed(1)  // 比例尺
+      let unit = Number(700 / ((maxLong-minLong) * 100)).toFixed(1)  // 比例尺
       holes.forEach((item, index) => {
-        item.x = Number(((longitudes[index] - minLong)*10000000*unit).toFixed(1)) + 50
-        item.y = Number(((latitudes[index] - minLati)*10000000*unit).toFixed(1)) + 50
+        item.x = Number(((longitudes[index] - minLong)*100*unit).toFixed(1)) + 50
+        item.y = Number(((latitudes[index] - minLati)*100*unit).toFixed(1)) + 50
       })
       topLinePoints.forEach((item, index) => {
-        item.x = Number(((longitudes[index+holesLen] - minLong)*10000000*unit).toFixed(1)) + 50
-        item.y = Number(((latitudes[index+holesLen] - minLati)*10000000*unit).toFixed(1)) + 50
+        item.x = Number(((longitudes[index+holesLen] - minLong)*100*unit).toFixed(1)) + 50
+        item.y = Number(((latitudes[index+holesLen] - minLati)*100*unit).toFixed(1)) + 50
       })
       dispatch({
         type: "SET_HOLE_INDEX",
