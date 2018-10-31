@@ -9,13 +9,11 @@ class Home extends Component {
     title: '主页'
   }
 
-  componentWillMount() {
-    storage.getAllDataForKey('records').then(records => {
-      console.error(records.id)
-      store.dispatch({
-        type: 'SET_RECORDS',
-        records
-      })
+  async componentWillMount() {
+    let records = await storage.getAllDataForKey('records')
+    store.dispatch({
+      type: 'SET_RECORDS',
+      records
     })
   }
 

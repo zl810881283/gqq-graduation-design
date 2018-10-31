@@ -1,34 +1,88 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Button} from 'react-native';
+import { StyleSheet, Text, ScrollView, View} from 'react-native';
 import store from '../store'
 import { connect } from "react-redux"
+import { Flex, WhiteSpace, Button, Toast } from 'antd-mobile-rn'
+import Modal from "react-native-modal"
 
 class HistoryRecords extends Component {
   static navigationOptions = {
     title: '历史记录'
   }
   render() {
+    let { records, navigation, deleteRecord, toResult } = this.props
     return (
-      <View style={styles.container}>
-        <Text>
-          历史记录页面
-        </Text>
-      </View>
+      <ScrollView style={styles.container}>
+        <Flex>
+          <Flex.Item>
+            <Text>名称</Text>
+          </Flex.Item>
+          <Flex.Item>
+            <Text>操作</Text>
+          </Flex.Item>
+        </Flex>
+        {records.map((item, index) => (
+          <Flex key={item.name}>
+            <Flex.Item>
+              <Text>{item.name}</Text>
+            </Flex.Item>
+            <Flex.Item>
+              <Flex justify="start">
+                <Button style={styles.button} onClick={() => toResult(index, navigation)}>查看</Button>
+                <Button style={styles.button} onClick={() => deleteRecord(item.name)}>删除</Button>
+              </Flex>
+            </Flex.Item>
+          </Flex>
+        ))}
+        <WhiteSpace size="lg" />
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+  container: {},
+  button: {
+    width: 100,
   }
 });
 
 let mapStateToProps = state => {
-  return state
+  return {
+    records: state.records
+  }
 }
 
-export default connect(mapStateToProps)(HistoryRecords)
+let mapDispatchToProps = dispatch => {
+  return {
+    toResult: (index, navigation) => {
+      let { records } = store.getState()
+      dispatch({
+        type: "SET_HOLE_INDEX",
+        holeIndex: records[index].holeIndex,
+      })
+      dispatch({
+        type: "SET_GRID_INDEX",
+        gridIndex: records[index].gridIndex,
+      })
+      dispatch({
+        type: "SET_HOLE_INDEX_TABLE",
+        holeIndexTable: records[index].holeIndexTable
+      })
+      navigation.navigate('Result')
+    },
+    deleteRecord: async (name) => {
+      await storage.remove({
+        key: 'records',
+        id: name
+      })
+      let records = await storage.getAllDataForKey('records')
+      store.dispatch({
+        type: 'SET_RECORDS',
+        records
+      })
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryRecords)

@@ -107,9 +107,9 @@ let mapStateToProps = state => {
 
 let mapDispatchToProps = dispatch => {
   return {
-    save: () => {
+    save: async () => {
       let state = store.getState()
-      let {name, records, holeIndex} = state
+      let {name, records, holeIndex, gridIndex, holeIndexTable} = state
       if (name === '') return Toast.info('请先填写名称！', 1)
       if (records.find(item => item.name === name)) return Toast.info('名称已存在！', 1)
       storage.save({
@@ -118,9 +118,16 @@ let mapDispatchToProps = dispatch => {
         data: {
           name,
           holeIndex,
+          gridIndex,
+          holeIndexTable
         }
       })
       Toast.info('保存成功', 1)
+      records = await storage.getAllDataForKey('records')
+      store.dispatch({
+        type: 'SET_RECORDS',
+        records
+      })
     },
     nameChange: value => {
       dispatch({

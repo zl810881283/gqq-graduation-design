@@ -134,6 +134,7 @@ const initialState = {
     table2Head: ['孔号'],
     table2Data: ['装药量']
   },
+  deleteModal: false,
   records: []
 }
 
