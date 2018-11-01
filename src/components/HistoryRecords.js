@@ -64,6 +64,10 @@ let mapDispatchToProps = dispatch => {
     toResult: (index, navigation) => {
       let { records } = store.getState()
       dispatch({
+        type: "SET_NAME",
+        name: records[index].name,
+      })
+      dispatch({
         type: "SET_HOLE_INDEX",
         holeIndex: records[index].holeIndex,
       })
@@ -74,6 +78,10 @@ let mapDispatchToProps = dispatch => {
       dispatch({
         type: "SET_HOLE_INDEX_TABLE",
         holeIndexTable: records[index].holeIndexTable
+      })
+      dispatch({
+        type: "SET_BLAST_INDEX_DESIGN",
+        blastIndexDesign: records[index].blastIndexDesign
       })
       navigation.navigate('Result')
     },

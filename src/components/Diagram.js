@@ -31,8 +31,11 @@ class Diagram extends Component {
               { index !== 0 && item.type.indexOf('首排炮孔')!=-1 ? <Path d={`M ${holes[index-1].x} ${holes[index-1].y} L ${item.x} ${item.y}`} stroke="black" /> : null }
             </G>
           })}
-          <Path d={topLinePath} stroke="black" fill="none"/>
+          { topLinePoints.length > 1 ? <Path d={topLinePath} stroke="black" fill="none"/> : null }
         </Svg>
+        <Button onClick={() => this.props.navigation.navigate('BlastIndexDesign')} type="primary" style={styles.button}>
+          <Text style={{fontSize:15}}>下一步</Text>
+        </Button>        
         <Button onClick={() => navigation.navigate('Home')} type="primary" style={styles.button}>
           <Text style={{fontSize:15}}>返回主页</Text>
         </Button>
@@ -52,8 +55,10 @@ let mapDispatchToProps = dispatch => {
 
 const styles = StyleSheet.create({
   button: {
-    height: 25,
-    margin: 15
+    height:30,
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 15
   }
 });
 

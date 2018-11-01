@@ -19,8 +19,8 @@ class HoleIndex extends Component {
   render() {
     let {
       topLinePointChange, holesGPSChange, holesNumberChange, navigation,
-      holesLChange, resistLineLChange, onOk, topLinePoints, addHole, 
-      addPoint, holes, resistLine, focusRender, radioData, holeTypeChange,
+      holesLChange, WChange, onOk, topLinePoints, addHole, 
+      addPoint, holes, focusRender, radioData, holeTypeChange,
       deletePoint, deleteHole
     } = this.props
     return (
@@ -29,12 +29,12 @@ class HoleIndex extends Component {
           <Text style={styles.inputTitle}>坡顶线测点处GPS数据：</Text>
           <List style={styles.list}>
             {topLinePoints.map((item, index) => {
-              return <TextInput
+              return <InputItem
                 key={index}
                 onChangeText={value => topLinePointChange(value, index)}
                 style={styles.textInput}
                 value={item.GPS}
-                placeholder="测点GPS"
+                placeholder="测点GPS(经度 纬度)"
               />
             })}
           </List>  
@@ -60,28 +60,28 @@ class HoleIndex extends Component {
               ))}
             </List>
             <List style={styles.list}>
-              <TextInput
+              <InputItem
                 onChangeText={value => holesNumberChange(value, index)}
                 style={styles.textInput}
                 value={item.number}
                 placeholder="孔号"
               />
-              <TextInput
+              <InputItem
                 onChangeText={value => holesGPSChange(value, index)}
                 style={styles.textInput}
                 value={item.GPS}
-                placeholder="GPS数据"
+                placeholder="GPS数据(经度 纬度)"
               />
-              <TextInput
+              <InputItem
                 onChangeText={value => holesLChange(value, index)}
                 style={styles.textInput}
                 value={item.l}
                 placeholder="孔深"
               />
-              {item.type.indexOf('首排炮孔') != -1 ? <TextInput
-                onChangeText={value => resistLineLChange(value)}
+              {item.type.indexOf('首排炮孔') != -1 ? <InputItem
+                onChangeText={value => WChange(value, index)}
                 style={styles.textInput}
-                value={resistLine}
+                value={item.W}
                 placeholder="首排炮孔抵抗线"
               /> : null}
             </List>
@@ -108,7 +108,7 @@ let mapStateToProps = state => {
 let mapDispatchToProps = dispatch => {
   return {
     created: () => {},
-    topLinePointChange: value => {
+    topLinePointChange: (value, index) => {
       let state = store.getState()
       let { topLinePoints, focusRender } = state.holeIndex
       topLinePoints[index].GPS = value
@@ -130,7 +130,7 @@ let mapDispatchToProps = dispatch => {
         detonator: '',
         GPS: '',
         resistLine: '',
-        type: '',
+        type: [],
         q: '',
         Q: '',
         Q2: '',
@@ -143,7 +143,7 @@ let mapDispatchToProps = dispatch => {
         mediLen: '',
         fillLen: '',
         x: '',
-        y: ''
+        y: '',
       })
       dispatch({
         type: "SET_HOLE_INDEX",
@@ -210,10 +210,10 @@ let mapDispatchToProps = dispatch => {
         }
       })
     },
-    resistLineLChange: value => {
+    WChange: (value, index) => {
       let state = store.getState()
       let { holes, focusRender } = state.holeIndex
-      holes[index].resistLine = value
+      holes[index].W = value
       dispatch({
         type: "SET_HOLE_INDEX",
         holeIndex: {
@@ -272,13 +272,13 @@ let mapDispatchToProps = dispatch => {
       let { holes, topLinePoints } = state.holeIndex
       let longitudes = [], latitudes = [], holesLen = holes.length
       holes.map(item => {
-        let Gps = item.GPS.split(' ')
+        let Gps = item.GPS.split(/\s+/)
         Gps = latLng2WebMercator(Gps[0], Gps[1])
         longitudes.push(Number(Gps[0]).toFixed(2))
         latitudes.push(Number(Gps[1]).toFixed(2))
       })
       topLinePoints.map(item => {
-        let Gps = item.GPS.split(' ')
+        let Gps = item.GPS.split(/\s+/)
         Gps = latLng2WebMercator(Gps[0], Gps[1])
         longitudes.push(Number(Gps[0]).toFixed(2))
         latitudes.push(Number(Gps[1]).toFixed(2))

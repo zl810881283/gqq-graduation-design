@@ -88,7 +88,7 @@ let mapDispatchToProps = dispatch => {
       let state = store.getState()
       dispatch({
         type: "SET_BLAST_INDEX_DESIGN",
-        holeIndex: {
+        blastIndexDesign: {
           ...state.blastIndexDesign,
           k: value
         }
@@ -98,7 +98,7 @@ let mapDispatchToProps = dispatch => {
       let state = store.getState()
       dispatch({
         type: "SET_BLAST_INDEX_DESIGN",
-        holeIndex: {
+        blastIndexDesign: {
           ...state.blastIndexDesign,
           H: value
         }
@@ -108,7 +108,7 @@ let mapDispatchToProps = dispatch => {
       let state = store.getState()
       dispatch({
         type: "SET_BLAST_INDEX_DESIGN",
-        holeIndex: {
+        blastIndexDesign: {
           ...state.blastIndexDesign,
           lenIndex: value
         }
@@ -118,7 +118,7 @@ let mapDispatchToProps = dispatch => {
       let state = store.getState()
       dispatch({
         type: "SET_BLAST_INDEX_DESIGN",
-        holeIndex: {
+        blastIndexDesign: {
           ...state.blastIndexDesign,
           spec: value
         }
@@ -154,8 +154,9 @@ let mapDispatchToProps = dispatch => {
             item.a = GetDistance(holes[index-1].x, holes[index-1].y, item.x, item.y).toFixed(2)
           }
         } else {
-          let a1 = GetDistance(holes[index+1].x, holes[index+1].y, item.x, item.y).toFixed(2)
-          let a2 = GetDistance(holes[index-1].x, holes[index-1].y, item.x, item.y).toFixed(2)
+          let a1 = 0, a2 = 0
+          if (holes[index+1]) a1 = GetDistance(holes[index+1].x, holes[index+1].y, item.x, item.y).toFixed(2)
+          if (holes[index-1]) a2 = GetDistance(holes[index-1].x, holes[index-1].y, item.x, item.y).toFixed(2)
           item.a = ((Number(a1) + Number(a2))/2).toFixed(2)
         }
         // 设计装药量Q
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginRight: 15,
     marginBottom: 15,
-    height: 35,
+    height: 30,
   }
 });
 

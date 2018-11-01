@@ -36,6 +36,9 @@ class HoleIndexTable extends Component {
             }
           </Table>
         </ScrollView>
+        <Button onClick={() => this.props.navigation.navigate('GridIndexDesign')} type="primary" style={styles.button}>
+          <Text style={{fontSize:20}}>下一步</Text>
+        </Button> 
         <Button onClick={() => this.props.navigation.navigate('Home')} type="primary" style={styles.button}>
           <Text style={{fontSize:20}}>返回主页</Text>
         </Button>
@@ -108,8 +111,8 @@ const styles = StyleSheet.create({
   text: { margin: 6 },
   row: { flexDirection: 'row' },
   button: {
-    height: 40,
-    margin: 30
+    height: 30,
+    margin: 15
   }
 });
 

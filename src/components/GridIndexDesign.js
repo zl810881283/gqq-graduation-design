@@ -22,7 +22,7 @@ class GridIndexDesign extends Component {
                 onChangeText={value => parentNumberChange(value, index)}
                 style={styles.textInput}
                 value={item.parentNumber}
-                placeholder="前一炮孔编号"
+                placeholder="前一炮孔编号(起始炮孔不填)"
               />
             </List>
             <List renderHeader={() => '雷管类型'}>
@@ -134,8 +134,8 @@ const styles = StyleSheet.create({
     marginBottom: 120
   },
   button: {
-    margin: 15,
-    height: 30
+    height:30,
+    margin:15,
   },
   typeRadio: {
     height: 25

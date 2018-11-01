@@ -6,7 +6,7 @@ import store from '../store'
 
 class Home extends Component {
   static navigationOptions = {
-    title: '主页'
+    title: '露天矿垂直深孔爆破'
   }
 
   async componentWillMount() {
@@ -20,22 +20,18 @@ class Home extends Component {
   render() {
     return (
       <WingBlank>
-        <Text style={styles.title}>露天矿垂直深孔爆破</Text>
-        <WhiteSpace size='xl' />
-        <Button onClick={() => this.props.navigation.navigate('HoleIndex')} type="primary" style={styles.button}>
-          <Text style={{fontSize:15}}>炮孔参数</Text>
-        </Button><WhiteSpace />
-        <WhiteSpace size='xl' />
-        <Button onClick={() => this.props.navigation.navigate('BlastIndexDesign')} type="primary" style={styles.button}>
-          <Text style={{fontSize:15}}>爆破参数设计</Text>
+        <Button 
+          onClick={() => this.props.navigation.navigate('HoleIndex')} 
+          type="primary" 
+          style={styles.startDesignButton}>
+          <Text style={{fontSize:20}}>开始设计</Text>
         </Button>
-        <WhiteSpace size='xl' />
-        <Button onClick={() => this.props.navigation.navigate('GridIndexDesign')} type="primary" style={styles.button}>
-          <Text style={{fontSize:15}}>起爆网络设计</Text>
-        </Button>
-        <WhiteSpace size='xl' />
-        <Button onClick={() => this.props.navigation.navigate('HistoryRecords')} type="primary" style={styles.button}>
-          <Text style={{fontSize:15}}>历史记录</Text>
+        <WhiteSpace size='xl'/>
+        <Button 
+          onClick={() => this.props.navigation.navigate('HistoryRecords')} 
+          type="primary" 
+          style={styles.button}>
+          <Text style={{fontSize:20}}>历史记录</Text>
         </Button>
       </WingBlank>
     );
@@ -50,8 +46,13 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   button: {
-    height: 35,
+    height: 40,
     marginBottom: 10
+  },
+  startDesignButton: {
+    height: 40,
+    marginBottom: 10,
+    marginTop: 200  
   }
 });
 
