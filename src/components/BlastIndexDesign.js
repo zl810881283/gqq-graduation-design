@@ -136,6 +136,7 @@ let mapDispatchToProps = dispatch => {
         } else {
           // 找到最近的两个首排炮孔，在他们的连线上做垂足
           let firstHoles = holes.filter(i => i.type.indexOf('首排炮孔')!=-1)
+          if (firstHoles.length<2) return alert('请至少选择两个首排炮孔!')
           let distances = firstHoles.map((i, index2) => {
             return {
               len: GetDistance(i.x, i.y, item.x, item.y).toFixed(2),

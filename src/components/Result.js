@@ -44,7 +44,7 @@ class Result extends Component {
   }
 
   render() {
-    let { holes, topLinePoints, navigation, table1Head, table1Data, table2Head, table2Data, save, nameChange, name} = this.props
+    let { holes, svgHeight, topLinePoints, navigation, table1Head, table1Data, table2Head, table2Data, save, nameChange, name} = this.props
     let topLinePath = ''
     for (let i = 0;i < topLinePoints.length;i++) {
       if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
@@ -53,7 +53,7 @@ class Result extends Component {
     return (
       <ScrollView>
         <Svg
-          height="700"
+          height={svgHeight}
           width="350"
          >
           {holes.map((item, index) => {
@@ -68,7 +68,7 @@ class Result extends Component {
               {this.getPath(index,holes)}
             </G>
           })}
-          <Path d={topLinePath} stroke="black" fill="none"/>
+          { topLinePoints.length > 1 ? <Path d={topLinePath} stroke="black" fill="none"/> : null }
         </Svg>
         <ScrollView horizontal={true}>
           <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
@@ -105,7 +105,8 @@ let mapStateToProps = state => {
   return {
     ...state.holeIndex,
     ...state.gridIndex,
-    name: state.name
+    name: state.name,
+    svgHeight: state.svgHeight
   }
 }
 

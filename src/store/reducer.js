@@ -18,7 +18,7 @@ const initialState = {
     ],
     holes: [
       {
-        number: '',
+        number: '1',
         parentNumber: '',
         detonator: '',
         GPS: '132.111165 132.111158',
@@ -38,11 +38,11 @@ const initialState = {
         y: ''
       },
       {
-        number: '',
+        number: '2',
         parentNumber: '',
         detonator: '',
         GPS: '132.111179 132.111132',
-        type: [],
+        type: ['首排炮孔'],
         q: '',
         Q: '',
         Q2: '',
@@ -58,11 +58,11 @@ const initialState = {
         y: ''
       },
       {
-        number: '',
+        number: '3',
         parentNumber: '',
         detonator: '',
         GPS: '132.111195 132.111110',
-        type: [],
+        type: ['首排炮孔'],
         q: '',
         Q: '',
         Q2: '',

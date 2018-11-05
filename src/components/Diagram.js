@@ -32,9 +32,7 @@ class Diagram extends Component {
             </G>
           })}
           { topLinePoints.length > 1 ? <Path d={topLinePath} stroke="black" fill="none"/> : null }
-          {fisrtLineHoles.map((item, index) => {
-            { index !== 0 && item.type.indexOf('首排炮孔')!=-1 ? <Path d={`M ${holes[index-1].x} ${holes[index-1].y} L ${item.x} ${item.y}`} stroke="black" /> : null }
-          })}
+          {fisrtLineHoles.map((item, index) => index !== 0 ? <Path d={`M ${fisrtLineHoles[index-1].x} ${fisrtLineHoles[index-1].y} L ${item.x} ${item.y}`} stroke="black" /> : null)}
         </Svg>
         <Button onClick={() => this.props.navigation.navigate('BlastIndexDesign')} type="primary" style={styles.button}>
           <Text style={{fontSize:15}}>下一步</Text>
