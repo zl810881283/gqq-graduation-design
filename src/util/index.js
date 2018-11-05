@@ -35,9 +35,9 @@ export function getVerticalLen (a, b ,c) {
 
 
 export function latLng2WebMercator(lng, lat) {
-      var earthRad = 6378137.0;
-      var x = lng * Math.PI / 180 * earthRad;
-      var a = lat * Math.PI / 180;
-      var y = earthRad / 2 * Math.log((1.0 + Math.sin(a)) / (1.0 - Math.sin(a)));
-      return [x, y];
-  }
+    var earthRad = 6378137.0;
+    var x = lng * Math.PI / 180 * earthRad;
+    var a = lat * Math.PI / 180;
+    var y = earthRad / 2 * Math.log((1.0 + Math.sin(a)) / (1.0 - Math.sin(a)));
+    return [x, y];
+}

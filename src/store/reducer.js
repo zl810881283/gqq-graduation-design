@@ -1,4 +1,5 @@
 const initialState = {
+  svgHeight: 0,
   name: '',
 	holeIndex: {
     focusRender: false,
@@ -20,7 +21,7 @@ const initialState = {
         number: '',
         parentNumber: '',
         detonator: '',
-        GPS: '',
+        GPS: '132.111165 132.111158',
         type: [],
         q: '',
         Q: '',
@@ -35,7 +36,47 @@ const initialState = {
         fillLen: '',
         x: '',
         y: ''
-      }
+      },
+      {
+        number: '',
+        parentNumber: '',
+        detonator: '',
+        GPS: '132.111179 132.111132',
+        type: [],
+        q: '',
+        Q: '',
+        Q2: '',
+        W: '',
+        b: '',
+        a: '',
+        l: '',
+        h: '',
+        mediCount: '',
+        mediLen: '',
+        fillLen: '',
+        x: '',
+        y: ''
+      },
+      {
+        number: '',
+        parentNumber: '',
+        detonator: '',
+        GPS: '132.111195 132.111110',
+        type: [],
+        q: '',
+        Q: '',
+        Q2: '',
+        W: '',
+        b: '',
+        a: '',
+        l: '',
+        h: '',
+        mediCount: '',
+        mediLen: '',
+        fillLen: '',
+        x: '',
+        y: ''
+      },
     ]
   },
   blastIndexDesign: {
@@ -90,12 +131,17 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         name: action.name
-    }      
+      }      
     case 'SET_RECORDS':
       return {
         ...state,
         records: action.records
-    }          
+      }          
+    case 'SET_SVG_HEIGHT':
+      return {
+        ...state,
+        svgHeight: action.svgHeight
+      }        
     default:
       return state;
   }

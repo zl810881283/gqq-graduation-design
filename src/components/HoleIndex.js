@@ -31,7 +31,7 @@ class HoleIndex extends Component {
             {topLinePoints.map((item, index) => {
               return <InputItem
                 key={index}
-                onChangeText={value => topLinePointChange(value, index)}
+                onChange={value => topLinePointChange(value, index)}
                 style={styles.textInput}
                 value={item.GPS}
                 placeholder="测点GPS(经度 纬度)"
@@ -61,25 +61,25 @@ class HoleIndex extends Component {
             </List>
             <List style={styles.list}>
               <InputItem
-                onChangeText={value => holesNumberChange(value, index)}
+                onChange={value => holesNumberChange(value, index)}
                 style={styles.textInput}
                 value={item.number}
                 placeholder="孔号"
               />
               <InputItem
-                onChangeText={value => holesGPSChange(value, index)}
+                onChange={value => holesGPSChange(value, index)}
                 style={styles.textInput}
                 value={item.GPS}
                 placeholder="GPS数据(经度 纬度)"
               />
               <InputItem
-                onChangeText={value => holesLChange(value, index)}
+                onChange={value => holesLChange(value, index)}
                 style={styles.textInput}
                 value={item.l}
                 placeholder="孔深"
               />
               {item.type.indexOf('首排炮孔') != -1 ? <InputItem
-                onChangeText={value => WChange(value, index)}
+                onChange={value => WChange(value, index)}
                 style={styles.textInput}
                 value={item.W}
                 placeholder="首排炮孔抵抗线"
@@ -269,6 +269,7 @@ let mapDispatchToProps = dispatch => {
     },
     onOk: (navigation) => {
       let state = store.getState()
+      let {svgHeight} = state
       let { holes, topLinePoints } = state.holeIndex
       let longitudes = [], latitudes = [], holesLen = holes.length
       holes.map(item => {
@@ -279,6 +280,7 @@ let mapDispatchToProps = dispatch => {
       })
       topLinePoints.map(item => {
         let Gps = item.GPS.split(/\s+/)
+        if (Gps.length<2) return 
         Gps = latLng2WebMercator(Gps[0], Gps[1])
         longitudes.push(Number(Gps[0]).toFixed(2))
         latitudes.push(Number(Gps[1]).toFixed(2))
@@ -291,10 +293,12 @@ let mapDispatchToProps = dispatch => {
       holes.forEach((item, index) => {
         item.x = Number(((longitudes[index] - minLong)*100*unit).toFixed(1)) + 25
         item.y = Number(((latitudes[index] - minLati)*100*unit).toFixed(1)) + 25
+        if (item.y > svgHeight) svgHeight = item.y
       })
       topLinePoints.forEach((item, index) => {
         item.x = Number(((longitudes[index+holesLen] - minLong)*100*unit).toFixed(1)) + 25
         item.y = Number(((latitudes[index+holesLen] - minLati)*100*unit).toFixed(1)) + 25
+        if (item.y > svgHeight) svgHeight = item.y
       })
       dispatch({
         type: "SET_HOLE_INDEX",
@@ -302,6 +306,10 @@ let mapDispatchToProps = dispatch => {
           ...state.holeIndex,
           holes
         }
+      })
+      dispatch({
+        type: "SET_SVG_HEIGHT",
+        svgHeight: svgHeight + 25
       })
       navigation.navigate('Diagram')
     }

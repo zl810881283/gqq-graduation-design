@@ -10,16 +10,17 @@ class Diagram extends Component {
   }
 
   render() {
-    let { holes, topLinePoints, navigation } = this.props
+    let { holes, topLinePoints, navigation, svgHeight } = this.props
     let topLinePath = ''
     for (let i = 0;i < topLinePoints.length;i++) {
       if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
       if (i !== 0) topLinePath += "T " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
     }
+    let fisrtLineHoles = holes.filter(item => item.type.indexOf('首排炮孔')!=-1)
     return (
       <ScrollView>
         <Svg
-          height="700"
+          height={svgHeight}
           width="350"
         >
           {holes.map((item, index) => {
@@ -28,10 +29,12 @@ class Diagram extends Component {
               <SvgText x={item.x-4} y={item.y+5} fontSize="15">
                 <TSpan>{item.number}</TSpan>
               </SvgText>
-              { index !== 0 && item.type.indexOf('首排炮孔')!=-1 ? <Path d={`M ${holes[index-1].x} ${holes[index-1].y} L ${item.x} ${item.y}`} stroke="black" /> : null }
             </G>
           })}
           { topLinePoints.length > 1 ? <Path d={topLinePath} stroke="black" fill="none"/> : null }
+          {fisrtLineHoles.map((item, index) => {
+            { index !== 0 && item.type.indexOf('首排炮孔')!=-1 ? <Path d={`M ${holes[index-1].x} ${holes[index-1].y} L ${item.x} ${item.y}`} stroke="black" /> : null }
+          })}
         </Svg>
         <Button onClick={() => this.props.navigation.navigate('BlastIndexDesign')} type="primary" style={styles.button}>
           <Text style={{fontSize:15}}>下一步</Text>
@@ -45,7 +48,10 @@ class Diagram extends Component {
 }
 
 let mapStateToProps = state => {
-  return state.holeIndex
+  return {
+    ...state.holeIndex,
+    svgHeight: state.svgHeight
+  }
 }
 
 let mapDispatchToProps = dispatch => {
