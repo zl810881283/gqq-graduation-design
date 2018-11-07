@@ -171,7 +171,7 @@ let mapDispatchToProps = dispatch => {
         // 药卷数量(以0.5卷为最小计量单位)
         item.mediCount = Math.ceil(item.Q*2/spec)/2
         // 超深
-        item.h = item.l - H
+        // item.h = item.l - H
         // 装药长度
         item.mediLen = Number((item.Q/lenIndex).toFixed(2))
         // 填塞长度

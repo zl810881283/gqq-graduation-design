@@ -78,6 +78,7 @@ class HoleIndex extends Component {
                 value={item.l}
                 placeholder="孔深"
               />
+              <Text style={styles.hStyle}>超深: {item.h}</Text>
               {item.type.indexOf('首排炮孔') != -1 ? <InputItem
                 onChange={value => WChange(value, index)}
                 style={styles.textInput}
@@ -238,8 +239,32 @@ let mapDispatchToProps = dispatch => {
     },
     holesLChange: (value, index) => {
       let state = store.getState()
+      let { lAndH } = state, h = ''
       let { holes, focusRender } = state.holeIndex
+      // 计算超深
+      if (value<lAndH[0].l) {
+        h = '孔深过小，无对应超深'
+      } else if (value>lAndH[lAndH.length-1].l) {
+        h = '孔深过大，无对应超深'
+      } else {
+        for (let i = 0;i < lAndH.length;i++) {
+          if (value == lAndH[i].l) {
+            h = lAndH[i].h
+            break
+          } else if (i!=lAndH.length-1 && value>lAndH[i].l && value<lAndH[i+1].l) {
+            if (lAndH[i].h === lAndH[i+1].h) {
+              h = lAndH[i].h
+            } else {
+              let ratio = ((value - lAndH[i].l)/(lAndH[i+1].l -lAndH[i].l)).toFixed(1)
+              let d = lAndH[i+1].h - lAndH[i].h
+              h = lAndH[i].h + d*ratio
+            }
+            break
+          }
+        }
+      }
       holes[index].l = value
+      holes[index].h = h
       dispatch({
         type: "SET_HOLE_INDEX",
         holeIndex: {
@@ -334,7 +359,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   holeTextInputs: {
-    marginBottom: 120
+    marginBottom: 150
   },
   button: {
     height:30,
@@ -344,6 +369,10 @@ const styles = StyleSheet.create({
   },
   typeRadio: {
     height: 25
+  },
+  hStyle: {
+    fontSize: 15,
+    margin: 8
   }
 });
 

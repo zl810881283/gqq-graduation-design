@@ -104,7 +104,36 @@ const initialState = {
   deleteModal: false,
   holesModal: false,
   holesModalIndex: 0,
-  records: []
+  records: [],
+  lAndH: [
+    { l: 2.8, h: 1 },
+    { l: 3.5, h: 1 },
+    { l: 4, h: 1 },
+    { l: 4.5, h: 2 },
+    { l: 5, h: 1 },
+    { l: 5.5, h: 2 },
+    { l: 6, h: 2 },
+    { l: 6.5, h: 2 },
+    { l: 7, h: 1.5 },
+    { l: 7.5, h: 1.5 },
+    { l: 8, h: 1.5 },
+    { l: 8.5, h: 2 },
+    { l: 9, h: 2 },
+    { l: 9.5, h: 2 },
+    { l: 10, h: 2 },
+    { l: 11, h: 2 },
+    { l: 12, h: 2 },
+    { l: 13, h: 2 },
+    { l: 14, h: 2 },
+    { l: 15, h: 2 },
+    { l: 16, h: 2 },
+    { l: 17, h: 2 },
+    { l: 18, h: 2 },
+    { l: 19, h: 2 },
+    { l: 20, h: 2 },
+    { l: 21, h: 2 },
+    { l: 22, h: 2 },
+  ]
 }
 
 const reducer = (state = initialState, action) => {
