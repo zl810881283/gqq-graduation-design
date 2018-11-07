@@ -102,6 +102,8 @@ const initialState = {
     table2Data: ['装药量']
   },
   deleteModal: false,
+  holesModal: false,
+  holesModalIndex: 0,
   records: []
 }
 
@@ -141,7 +143,17 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         svgHeight: action.svgHeight
-      }        
+      }
+    case 'SET_HOLES_MODAL':
+      return {
+        ...state,
+        holesModal: action.holesModal
+      }
+    case 'SET_HOLES_MODAL_INDEX':
+      return {
+        ...state,
+        holesModalIndex: action.holesModalIndex
+      }
     default:
       return state;
   }
