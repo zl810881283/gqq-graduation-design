@@ -19,8 +19,8 @@ class HoleIndex extends Component {
   render() {
     let {
       topLinePointChange, holesGPSChange, holesNumberChange, navigation,
-      holesLChange, WChange, onOk, topLinePoints, addHole, 
-      addPoint, holes, focusRender, radioData, holeTypeChange,
+      holesLChange, onOk, topLinePoints, addHole, 
+      addPoint, holes, focusRender,
       deletePoint, deleteHole
     } = this.props
     return (
@@ -48,17 +48,6 @@ class HoleIndex extends Component {
         {holes.map((item, index) => {
           return (<View key={index} style={styles.holeTextInputs}>
             <Text style={styles.inputTitle}>炮孔参数：</Text>
-            <List renderHeader={() => '炮孔类型'} style={{marginBottom: 10,fontSize: 25}}>
-              {radioData.map(i => (
-                <CheckboxItem 
-                  key={i.value} 
-                  checked={item.type.indexOf(i.value) != -1}
-                  onChange={() => holeTypeChange(i.value, index)}
-                  style={styles.typeRadio}>
-                  <Text style={{fontSize: 12}}>{i.value}</Text>
-                </CheckboxItem>
-              ))}
-            </List>
             <List style={styles.list}>
               <InputItem
                 onChange={value => holesNumberChange(value, index)}
@@ -79,12 +68,6 @@ class HoleIndex extends Component {
                 placeholder="孔深"
               />
               <Text style={styles.hStyle}>超深: {item.h}</Text>
-              {item.type.indexOf('首排炮孔') != -1 ? <InputItem
-                onChange={value => WChange(value, index)}
-                style={styles.textInput}
-                value={item.W}
-                placeholder="首排炮孔抵抗线"
-              /> : null}
             </List>
           </View>)
         })}
@@ -211,19 +194,6 @@ let mapDispatchToProps = dispatch => {
         }
       })
     },
-    WChange: (value, index) => {
-      let state = store.getState()
-      let { holes, focusRender } = state.holeIndex
-      holes[index].W = value
-      dispatch({
-        type: "SET_HOLE_INDEX",
-        holeIndex: {
-          ...state.holeIndex,
-          holes,
-          focusRender: !focusRender
-        }
-      })
-    },
     holesNumberChange: (value, index) => {
       let state = store.getState()
       let { holes, focusRender } = state.holeIndex
@@ -265,24 +235,6 @@ let mapDispatchToProps = dispatch => {
       }
       holes[index].l = value
       holes[index].h = h
-      dispatch({
-        type: "SET_HOLE_INDEX",
-        holeIndex: {
-          ...state.holeIndex,
-          holes,
-          focusRender: !focusRender
-        }
-      })
-    },
-    holeTypeChange: (value, index) => {
-      let state = store.getState()
-      let { holes, focusRender } = state.holeIndex
-      let typeIndex = holes[index].type.indexOf(value)
-      if (typeIndex != -1) {
-        holes[index].type.splice(typeIndex, 1)
-      } else {
-        holes[index].type.push(value)
-      }
       dispatch({
         type: "SET_HOLE_INDEX",
         holeIndex: {
