@@ -7,7 +7,7 @@ const initialState = {
       { value: '首排炮孔' },
       { value: '特殊炮孔' },
       { value: '边角炮孔' },
-      { value: '其他炮孔' }
+      { value: '普通炮孔' }
     ],
     topLinePoints: [
       { 
