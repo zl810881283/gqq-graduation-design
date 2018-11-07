@@ -20,7 +20,7 @@ class HoleIndex extends Component {
     let {
       topLinePointChange, holesGPSChange, holesNumberChange, navigation,
       holesLChange, onOk, topLinePoints, addHole, 
-      addPoint, holes, focusRender,
+      addPoint, holes, focusRender, ZChange,
       deletePoint, deleteHole
     } = this.props
     return (
@@ -68,6 +68,12 @@ class HoleIndex extends Component {
                 placeholder="孔深"
               />
               <Text style={styles.hStyle}>超深: {item.h}</Text>
+              <InputItem
+                onChange={value => ZChange(value, index)}
+                style={styles.textInput}
+                value={item.z}
+                placeholder="Z坐标"
+              />
             </List>
           </View>)
         })}
@@ -289,6 +295,19 @@ let mapDispatchToProps = dispatch => {
         svgHeight: svgHeight + 25
       })
       navigation.navigate('Diagram')
+    },
+    ZChange: (value, index) => {
+      let state = store.getState()
+      let { holes, focusRender } = state.holeIndex
+      holes[index].z = value
+      dispatch({
+        type: "SET_HOLE_INDEX",
+        holeIndex: {
+          ...state.holeIndex,
+          holes,
+          focusRender: !focusRender
+        }
+      })
     }
   }
 }

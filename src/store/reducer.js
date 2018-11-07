@@ -35,7 +35,8 @@ const initialState = {
       //   mediLen: '',
       //   fillLen: '',
       //   x: '',
-      //   y: ''
+      //   y: '',
+      //   z: ''
       // },
       // {
       //   number: '2',
@@ -55,7 +56,8 @@ const initialState = {
       //   mediLen: '',
       //   fillLen: '',
       //   x: '',
-      //   y: ''
+      //   y: '',
+      //   z: ''
       // },
       // {
       //   number: '3',
@@ -75,7 +77,8 @@ const initialState = {
       //   mediLen: '',
       //   fillLen: '',
       //   x: '',
-      //   y: ''
+      //   y: '',
+      //   z: ''
       // },
       {
         number: '',
@@ -95,7 +98,8 @@ const initialState = {
         mediLen: '',
         fillLen: '',
         x: '',
-        y: ''
+        y: '',
+        z: ''
       },
     ]
   },
