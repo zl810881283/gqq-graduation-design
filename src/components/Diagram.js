@@ -29,6 +29,7 @@ class Diagram extends Component {
           width="350"
         >
           {holes.map((item, index) => {
+            if (!item.x) return null
             return <G key={item.number} onPressOut={() => holeCilck(index)}>
               <Circle cx={item.x} cy={item.y} r="10" fill="white" stroke="black" />
               <SvgText x={item.x-4} y={item.y+5} fontSize="15">
