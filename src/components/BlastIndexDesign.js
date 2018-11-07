@@ -11,24 +11,17 @@ class BlastIndexDesign extends Component {
   }
 
   render() {
-    let { qChange, kChange, HChange, onOk, k, H, navigation, lenIndex, lenIndexChange, specChange, spec, holes } = this.props
+    let { qChange, kChange, HChange, onOk, k, H, q, navigation, lenIndex, lenIndexChange, specChange, spec, holes } = this.props
     return (
       <ScrollView style={styles.container}>
-        {holes.map((item, index) => {
-          return <View key={index}>
-            <Text style={styles.inputTitle}>炮孔编号：{item.number}</Text>
-            <List style={{marginBottom:10}}>
-              <TextInput
-                onChangeText={value => qChange(value, index)}
-                style={styles.textInput}
-                value={item.q}
-                placeholder="设计单耗q"
-              />
-            </List> 
-          </View>  
-        })}
         <Text style={styles.inputTitle}>输入参数：</Text>
         <List style={styles.list}>
+          <TextInput
+            onChangeText={value => qChange(value)}
+            style={styles.textInput}
+            value={q}
+            placeholder="设计单耗q"
+          />
           <TextInput
             onChangeText={value => kChange(value)}
             style={styles.textInput}
@@ -71,16 +64,24 @@ let mapStateToProps = state => {
 
 let mapDispatchToProps = dispatch => {
   return {
-    qChange: (value, index) => {
+    qChange: value => {
       let state = store.getState()
-      let { holes, focusRender } = state.holeIndex
-      holes[index].q = value
+      let { holes } = state.holeIndex
+      holes.forEach(item => {
+        item.q = value
+      })
       dispatch({
         type: "SET_HOLE_INDEX",
         holeIndex: {
           ...state.holeIndex,
           holes,
-          focusRender: !focusRender
+        }
+      })
+      dispatch({
+        type: "SET_BLAST_INDEX_DESIGN",
+        blastIndexDesign: {
+          ...state.blastIndexDesign,
+          q: value
         }
       })
     },
