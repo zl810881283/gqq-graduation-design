@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, TextInput, ScrollView, Alert} from 'react-native';
 import store from '../store'
 import { connect } from "react-redux"
 import { List, Button, WhiteSpace, InputItem } from 'antd-mobile-rn'
@@ -32,7 +32,7 @@ class HoleIndex extends Component {
                 onChange={value => topLinePointChange(value, index)}
                 style={styles.textInput}
                 value={item.GPS}
-                placeholder="测点GPS(经度 纬度)"
+                placeholder="测点GPS -> 北京54坐标(X Y Z)"
               />
             })}
           </List>  
@@ -57,7 +57,7 @@ class HoleIndex extends Component {
                 onChange={value => holesGPSChange(value, index)}
                 style={styles.textInput}
                 value={item.GPS}
-                placeholder="GPS数据(X Y Z)"
+                placeholder="GPS数据 -> 北京54坐标(X Y Z)"
               />
               <InputItem
                 onChange={value => holesLChange(value, index)}
@@ -262,8 +262,11 @@ let mapDispatchToProps = dispatch => {
       let xMaxMin = findMaxAndMin(xs)
       let maxX = xMaxMin.max, minX= xMaxMin.min
       let yMaxMin = findMaxAndMin(ys)
-      let minY = yMaxMin.min
-      let unit = Number(300 / (maxX-minX)).toFixed(1)  // 比例尺
+      let maxY = yMaxMin.max, minY = yMaxMin.min
+      let unit = 0  // 比例尺
+      if (maxX!=minX) unit = Number(300 / (maxX-minX)).toFixed(1)
+      if (maxX==minX && maxY!=minY) unit = Number(700 / (maxY-minY)).toFixed(1)
+      if (maxX==minX && maxY==minY) return Alert.alert('提示', '请输入至少两个位置不同的炮孔!')
       holes.forEach((item, index) => {
         item.x = Number(((xs[index] - minX)*unit).toFixed(1)) + 25
         item.y = Number(((ys[index] - minY)*unit).toFixed(1)) + 25
