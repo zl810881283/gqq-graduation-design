@@ -83,6 +83,10 @@ let mapDispatchToProps = dispatch => {
         type: "SET_BLAST_INDEX_DESIGN",
         blastIndexDesign: records[index].blastIndexDesign
       })
+      dispatch({
+        type: "SET_SVG_HEIGHT",
+        svgHeight: records[index].svgHeight
+      })
       navigation.navigate('Result')
     },
     deleteRecord: async (name) => {

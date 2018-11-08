@@ -21,7 +21,7 @@ class Result extends Component {
     let dy = Math.abs(parentHole.y-childHole.y)
     let theta = Math.atan(dy/dx)
     theta *= 180 / Math.PI
-    let angle = parentHole.x-childHole.x < 0 ? theta-90 : 90-theta
+    let angle = theta+270
     let p1 = {
       x: parentHole.x-childHole.x > 0 ? childHole.x + 5*1: childHole.x - 5*1,
       y: parentHole.y-childHole.y > 0 ? childHole.y + 10 : childHole.y - 10 
@@ -146,7 +146,7 @@ let mapDispatchToProps = dispatch => {
   return {
     save: async () => {
       let state = store.getState()
-      let {name, records, holeIndex, gridIndex, holeIndexTable, blastIndexDesign} = state
+      let {name, svgHeight, records, holeIndex, gridIndex, holeIndexTable, blastIndexDesign} = state
       if (name === '') return Toast.info('请先填写名称！', 1)
       if (records.find(item => item.name === name)) return Toast.info('名称已存在！', 1)
       storage.save({
@@ -154,6 +154,7 @@ let mapDispatchToProps = dispatch => {
         id: name,
         data: {
           name,
+          svgHeight,
           holeIndex,
           gridIndex,
           holeIndexTable,
@@ -196,6 +197,16 @@ let mapDispatchToProps = dispatch => {
         holeIndexTable: {
           ...state.holeIndexTable,
           tableData,
+          focusRender: !focusRender
+        }
+      })
+      let { table2Data } = state.gridIndex
+      table2Data[index+1] = value + 'kg'
+      dispatch({
+        type: "SET_GRID_INDEX",
+        gridIndex: {
+          ...state.gridIndex,
+          table2Data,
           focusRender: !focusRender
         }
       })
