@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, ScrollView} from 'react-native';
 import store from '../store'
 import { connect } from "react-redux"
 import { List, Button, WhiteSpace, Checkbox, InputItem } from 'antd-mobile-rn'
-import { findMaxAndMin, latLng2WebMercator } from '../util'
+import { findMaxAndMin } from '../util'
 
 const CheckboxItem = Checkbox.CheckboxItem
 
@@ -20,7 +20,7 @@ class HoleIndex extends Component {
     let {
       topLinePointChange, holesGPSChange, holesNumberChange, navigation,
       holesLChange, onOk, topLinePoints, addHole, 
-      addPoint, holes, focusRender, ZChange,
+      addPoint, holes, focusRender,
       deletePoint, deleteHole
     } = this.props
     return (
@@ -59,20 +59,13 @@ class HoleIndex extends Component {
                 onChange={value => holesGPSChange(value, index)}
                 style={styles.textInput}
                 value={item.GPS}
-                placeholder="GPS数据(经度 纬度)"
+                placeholder="GPS数据(X Y Z)"
               />
               <InputItem
                 onChange={value => holesLChange(value, index)}
                 style={styles.textInput}
                 value={item.l}
                 placeholder="孔深"
-              />
-              <Text style={styles.hStyle}>超深: {item.h}</Text>
-              <InputItem
-                onChange={value => ZChange(value, index)}
-                style={styles.textInput}
-                value={item.z}
-                placeholder="Z坐标"
               />
             </List>
           </View>)
@@ -219,9 +212,9 @@ let mapDispatchToProps = dispatch => {
       let { holes, focusRender } = state.holeIndex
       // 计算超深
       if (value<lAndH[0].l) {
-        h = '孔深过小，无对应超深'
+        h = lAndH[0].h
       } else if (value>lAndH[lAndH.length-1].l) {
-        h = '孔深过大，无对应超深'
+        h = lAndH[lAndH.length-1].h
       } else {
         for (let i = 0;i < lAndH.length;i++) {
           if (value == lAndH[i].l) {
@@ -254,33 +247,34 @@ let mapDispatchToProps = dispatch => {
       let state = store.getState()
       let {svgHeight} = state
       let { holes, topLinePoints } = state.holeIndex
-      let longitudes = [], latitudes = [], holesLen = holes.length
+      let xs = [], ys = [], holesLen = holes.length
       holes.map(item => {
         let Gps = item.GPS.split(/\s+/)
-        Gps = latLng2WebMercator(Gps[0], Gps[1])
-        longitudes.push(Number(Gps[0]).toFixed(2))
-        latitudes.push(Number(Gps[1]).toFixed(2))
+        xs.push(Number(Gps[0]).toFixed(2))
+        ys.push(Number(Gps[1]).toFixed(2))
+        item.z = Gps[2]
       })
       topLinePoints.map(item => {
         let Gps = item.GPS.split(/\s+/)
-        if (Gps.length<2) return 
-        Gps = latLng2WebMercator(Gps[0], Gps[1])
-        longitudes.push(Number(Gps[0]).toFixed(2))
-        latitudes.push(Number(Gps[1]).toFixed(2))
+        if (Gps.length<3) return
+        xs.push(Number(Gps[0]).toFixed(2))
+        ys.push(Number(Gps[1]).toFixed(2))
+        item.z = Gps[2]
       })
-      let longMaxMin = findMaxAndMin(longitudes)
-      let maxLong = longMaxMin.max, minLong= longMaxMin.min
-      let latiMaxMin = findMaxAndMin(latitudes)
-      let minLati = latiMaxMin.min
-      let unit = Number(300 / ((maxLong-minLong) * 100)).toFixed(1)  // 比例尺
+      // console.error(xs, ys)
+      let xMaxMin = findMaxAndMin(xs)
+      let maxX = xMaxMin.max, minX= xMaxMin.min
+      let yMaxMin = findMaxAndMin(ys)
+      let minY = yMaxMin.min
+      let unit = Number(300 / (maxX-minX)).toFixed(1)  // 比例尺
       holes.forEach((item, index) => {
-        item.x = Number(((longitudes[index] - minLong)*100*unit).toFixed(1)) + 25
-        item.y = Number(((latitudes[index] - minLati)*100*unit).toFixed(1)) + 25
+        item.x = Number(((xs[index] - minX)*unit).toFixed(1)) + 25
+        item.y = Number(((ys[index] - minY)*unit).toFixed(1)) + 25
         if (item.y > svgHeight) svgHeight = item.y
       })
       topLinePoints.forEach((item, index) => {
-        item.x = Number(((longitudes[index+holesLen] - minLong)*100*unit).toFixed(1)) + 25
-        item.y = Number(((latitudes[index+holesLen] - minLati)*100*unit).toFixed(1)) + 25
+        item.x = Number(((xs[index+holesLen] - minX)*unit).toFixed(1)) + 25
+        item.y = Number(((ys[index+holesLen] - minY)*unit).toFixed(1)) + 25
         if (item.y > svgHeight) svgHeight = item.y
       })
       dispatch({
@@ -296,19 +290,6 @@ let mapDispatchToProps = dispatch => {
       })
       navigation.navigate('Diagram')
     },
-    ZChange: (value, index) => {
-      let state = store.getState()
-      let { holes, focusRender } = state.holeIndex
-      holes[index].z = value
-      dispatch({
-        type: "SET_HOLE_INDEX",
-        holeIndex: {
-          ...state.holeIndex,
-          holes,
-          focusRender: !focusRender
-        }
-      })
-    }
   }
 }
 
@@ -330,7 +311,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   holeTextInputs: {
-    marginBottom: 150
+    marginBottom: 90
   },
   button: {
     height:30,
