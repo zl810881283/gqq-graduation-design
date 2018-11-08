@@ -18,7 +18,7 @@ const initialState = {
     ],
     holes: [
       {
-        number: '1',
+        number: '11',
         parentNumber: '',
         detonator: '',
         GPS: '132.111165 132.111158',

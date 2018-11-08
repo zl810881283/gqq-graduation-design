@@ -15,13 +15,15 @@ class Diagram extends Component {
   render() {
     let { holes, topLinePoints, navigation, svgHeight, 
       holeCilck, holesModal, modalConfirm, radioData,
-      holesModalIndex, holeTypeChange, holesNumberChange, WChange } = this.props
+      holesModalIndex, holeTypeChange, holesNumberChange, WChange, 
+      focusRender, onModalClose } = this.props
     let topLinePath = ''
     for (let i = 0;i < topLinePoints.length;i++) {
       if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
       if (i !== 0) topLinePath += "T " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
     }
     let fisrtLineHoles = holes.filter(item => item.type.indexOf('首排炮孔')!=-1)
+
     return (
       <ScrollView>
         <Svg
@@ -30,7 +32,7 @@ class Diagram extends Component {
         >
           {holes.map((item, index) => {
             if (!item.x) return null
-            return <G key={item.number} onPressOut={() => holeCilck(index)}>
+            return <G key={index} onPressOut={() => holeCilck(index)}>
               <Circle cx={item.x} cy={item.y} r="10" fill="white" stroke="black" />
               <SvgText x={item.x-4} y={item.y+5} fontSize="15">
                 <TSpan>{item.number}</TSpan>
@@ -40,7 +42,7 @@ class Diagram extends Component {
           { topLinePoints.length > 1 ? <Path d={topLinePath} stroke="black" fill="none"/> : null }
           {fisrtLineHoles.map((item, index) => index !== 0 ? <Path d={`M ${fisrtLineHoles[index-1].x} ${fisrtLineHoles[index-1].y} L ${item.x} ${item.y}`} stroke="black" key={index}/> : null)}
         </Svg>
-        <Button onClick={() => this.props.navigation.navigate('BlastIndexDesign')} type="primary" style={styles.button}>
+        <Button onClick={() => navigation.navigate('BlastIndexDesign')} type="primary" style={styles.button}>
           <Text style={{fontSize:15}}>下一步</Text>
         </Button>        
         <Button onClick={() => navigation.navigate('Home')} type="primary" style={styles.button}>
@@ -49,7 +51,8 @@ class Diagram extends Component {
         <Modal
           animationType="slide"
           transparent={false}
-          visible={holesModal}>
+          visible={holesModal}
+          onRequestClose={onModalClose}>
           <ScrollView style={{marginTop: 40}}>
             <Text style={styles.inputTitle}>炮孔参数：</Text>
             <List renderHeader={() => '炮孔类型'} style={{marginBottom: 10,fontSize: 25}}>
@@ -109,7 +112,7 @@ let mapDispatchToProps = dispatch => {
         holesModal: true
       })
     },
-    modalConfirm: () => {
+    modalConfirm: (navigation) => {
       dispatch({
         type: 'SET_HOLES_MODAL',
         holesModal: false
@@ -148,7 +151,7 @@ let mapDispatchToProps = dispatch => {
         }
       })
     },
-    holesNumberChange: value => {
+    holesNumberChange: (value) => {
       let state = store.getState()
       let { holes, focusRender } = state.holeIndex
       let index = state.holesModalIndex
@@ -162,6 +165,7 @@ let mapDispatchToProps = dispatch => {
         }
       })
     },
+    onModalClose: () => {}
   }
 }
 
