@@ -34,7 +34,7 @@ class Diagram extends Component {
             if (!item.x) return null
             return <G key={index} onPressOut={() => holeCilck(index)}>
               <Circle cx={item.x} cy={item.y} r="10" fill="white" stroke="black" />
-              <SvgText x={item.x-4} y={item.y+5} fontSize="15">
+              <SvgText x={item.x-4*item.number.length} y={item.y+5} fontSize="15">
                 <TSpan>{item.number}</TSpan>
               </SvgText>
             </G>
