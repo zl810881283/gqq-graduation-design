@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import Svg,{ Circle, Path, TSpan, G, Text as SvgText} from 'react-native-svg'
 import { StyleSheet, ScrollView, View, Text, TextInput} from 'react-native';
 import { Button, List, Toast } from 'antd-mobile-rn'
-import { Table, Row } from 'react-native-table-component'
+import { Table, Row, TableWrapper, Cell } from 'react-native-table-component'
 import store from '../store'
 
 class Result extends Component {
@@ -44,11 +44,22 @@ class Result extends Component {
   }
 
   render() {
-    let { holes, svgHeight, topLinePoints, navigation, table1Head, table1Data, table2Head, table2Data, save, nameChange, name} = this.props
+    let { 
+      holes, svgHeight, topLinePoints, navigation, 
+      table1Head, table1Data, table2Head, table2Data, 
+      save, nameChange, name, tableHead, tableData,
+      Q2Change, fillLenChange
+    } = this.props
     let topLinePath = ''
     for (let i = 0;i < topLinePoints.length;i++) {
       if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
       if (i !== 0) topLinePath += "T " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
+    }
+    const Q2Input = (cellData, index) => {
+      return <TextInput onChangeText={value => Q2Change(value, index)}>{cellData}</TextInput>
+    }
+    const fillLenInput = (cellData, index) => {
+      return <TextInput onChangeText={value => fillLenChange(value, index)}>{cellData}</TextInput>
     }
     return (
       <ScrollView>
@@ -70,6 +81,26 @@ class Result extends Component {
           })}
           { topLinePoints.length > 1 ? <Path d={topLinePath} stroke="black" fill="none"/> : null }
         </Svg>
+        <ScrollView horizontal={true}>
+          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
+            <Row data={tableHead} widthArr={[75,75,75,75,75,75,75,75,75,75,75,75]}/>
+            {
+              tableData.map((rowData, index) => (
+                <TableWrapper key={index} style={styles.row}>
+                  {
+                    rowData.map((cellData, cellIndex) => (
+                      <Cell 
+                      style={{width:75}}
+                      key={cellIndex} 
+                      data={cellIndex === 8 ? Q2Input(cellData, index) : (cellIndex === 11 ? fillLenInput(cellData, index) : cellData)} 
+                      textStyle={styles.text}/>
+                    ))
+                  }
+                </TableWrapper>
+              ))
+            }
+          </Table>
+        </ScrollView>
         <ScrollView horizontal={true}>
           <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
             <Row data={table1Head} widthArr={[75,75,75,75,75,75,75,75,75]}></Row>
@@ -105,6 +136,7 @@ let mapStateToProps = state => {
   return {
     ...state.holeIndex,
     ...state.gridIndex,
+    ...state.holeIndexTable,
     name: state.name,
     svgHeight: state.svgHeight
   }
@@ -140,7 +172,58 @@ let mapDispatchToProps = dispatch => {
         type: 'SET_NAME',
         name: value
       })
-    }
+    },
+    Q2Change: (value, index) => {
+      let state = store.getState()
+      let { holes } = state.holeIndex
+      let { lenIndex } = state.blastIndexDesign
+      holes[index].Q2 = value
+      holes[index].mediLen = Number((value/lenIndex).toFixed(2))
+      holes[index].fillLen = Number((holes[index].l - holes[index].mediLen).toFixed(2))
+      dispatch({
+        type: "SET_HOLE_INDEX",
+        holeIndex: {
+          ...state.holeIndex,
+          holes
+        }
+      })
+      let { tableData, focusRender } = state.holeIndexTable
+      tableData[index][8] = value
+      tableData[index][10] = holes[index].mediLen
+      tableData[index][11] = holes[index].fillLen
+      dispatch({
+        type: "SET_HOLE_INDEX_TABLE",
+        holeIndexTable: {
+          ...state.holeIndexTable,
+          tableData,
+          focusRender: !focusRender
+        }
+      })
+    },
+    fillLenChange: (value, index) => {
+      let state = store.getState()
+      let { holes } = state.holeIndex
+      holes[index].fillLen = value
+      holes[index].mediLen = holes[index].l - value
+      dispatch({
+        type: "SET_HOLE_INDEX",
+        holeIndex: {
+          ...state.holeIndex,
+          holes
+        }
+      }) 
+      let { tableData, focusRender } = state.holeIndexTable
+      tableData[index][10] = holes[index].mediLen
+      tableData[index][11] = value
+      dispatch({
+        type: "SET_HOLE_INDEX_TABLE",
+        holeIndexTable: {
+          ...state.holeIndexTable,
+          tableData,
+          focusRender: !focusRender
+        }
+      })
+    },
   }
 }
 
@@ -163,6 +246,8 @@ const styles = StyleSheet.create({
     height: 40,
     marginBottom: 10
   },
+  text: { margin: 6 },
+  row: { flexDirection: 'row' },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Result)

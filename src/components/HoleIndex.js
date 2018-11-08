@@ -2,10 +2,8 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View, TextInput, ScrollView} from 'react-native';
 import store from '../store'
 import { connect } from "react-redux"
-import { List, Button, WhiteSpace, Checkbox, InputItem } from 'antd-mobile-rn'
+import { List, Button, WhiteSpace, InputItem } from 'antd-mobile-rn'
 import { findMaxAndMin } from '../util'
-
-const CheckboxItem = Checkbox.CheckboxItem
 
 class HoleIndex extends Component {
   static navigationOptions = {
@@ -261,7 +259,6 @@ let mapDispatchToProps = dispatch => {
         ys.push(Number(Gps[1]).toFixed(2))
         item.z = Gps[2]
       })
-      // console.error(xs, ys)
       let xMaxMin = findMaxAndMin(xs)
       let maxX = xMaxMin.max, minX= xMaxMin.min
       let yMaxMin = findMaxAndMin(ys)

@@ -7,7 +7,7 @@ import { Button } from 'antd-mobile-rn'
 
 class HoleIndexTable extends Component {
   render() {
-    let { tableHead, tableData, Q2Change, fillLenChange, focusRender } = this.props
+    let { tableHead, tableData, Q2Change, fillLenChange, focusRender, onOk, navigation } = this.props
     const Q2Input = (cellData, index) => {
       return <TextInput onChangeText={value => Q2Change(value, index)}>{cellData}</TextInput>
     }
@@ -36,7 +36,7 @@ class HoleIndexTable extends Component {
             }
           </Table>
         </ScrollView>
-        <Button onClick={() => this.props.navigation.navigate('GridIndexDesign')} type="primary" style={styles.button}>
+        <Button onClick={() => onOk(navigation)} type="primary" style={styles.button}>
           <Text style={{fontSize:20}}>下一步</Text>
         </Button> 
         <Button onClick={() => this.props.navigation.navigate('Home')} type="primary" style={styles.button}>
@@ -104,6 +104,35 @@ let mapDispatchToprops = dispatch => {
         }
       })
     },
+    onOk: navigation => {
+      let state = store.getState()
+      let { holes } = state.holeIndex
+      let { gridIndex } = state
+      let { table1Data, table2Data, table2Head } = gridIndex
+      // 乳化炸药、ms25、ms42、ms65
+      let power1 = '', ms25 = 0, ms42 = 0, ms65 = 0, allL = 0
+      for (let i = 0;i < holes.length;i++) {
+        allL += Number(holes[i].l)
+        table2Head.push(holes[i].number)
+        if (holes[i].Q2 != '') {
+          table2Data.push(holes[i].Q2+'kg')
+          power1 = Number(power1)+Number(holes[i].Q2)
+        } else {
+          table2Data.push(holes[i].Q+'kg')
+          power1 = Number(power1)+Number(holes[i].Q)
+        }
+        if (holes[i].detonator === '25ms') ms25++
+        if (holes[i].detonator === '42ms') ms42++
+        if (holes[i].detonator === '65ms') ms65++
+      }
+      table1Data[1]=power1.toFixed(2)
+      table1Data[3]=holes.length*2
+      table1Data[4]=ms25
+      table1Data[5]=ms42
+      table1Data[6]=ms65
+      table1Data[7]=Math.ceil(allL/50)*50
+      navigation.navigate('Result')
+    }
   }
 }
 

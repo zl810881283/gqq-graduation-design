@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux"
-import { StyleSheet, ScrollView, Text, Modal, View} from 'react-native';
+import { StyleSheet, ScrollView, Text, Modal, TextInput} from 'react-native';
 import Svg,{ Circle, Path, Text as SvgText, TSpan, G} from 'react-native-svg'
-import { Button, Checkbox, List, InputItem } from 'antd-mobile-rn'
+import { Button, Checkbox, List, InputItem, Radio } from 'antd-mobile-rn'
 import store from '../store'
 
 const CheckboxItem = Checkbox.CheckboxItem
+const RadioItem = Radio.RadioItem
 
 class Diagram extends Component {
   static navigationOptions = {
@@ -14,9 +15,9 @@ class Diagram extends Component {
 
   render() {
     let { holes, topLinePoints, navigation, svgHeight, 
-      holeCilck, holesModal, modalConfirm, radioData,
+      holeCilck, holesModal, modalConfirm, radioData, parentNumberChange,
       holesModalIndex, holeTypeChange, holesNumberChange, WChange, 
-      focusRender, onModalClose } = this.props
+      focusRender, onModalClose, detonators, detonatorChange } = this.props
     let topLinePath = ''
     for (let i = 0;i < topLinePoints.length;i++) {
       if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
@@ -66,7 +67,7 @@ class Diagram extends Component {
                 </CheckboxItem>
               ))}
             </List>    
-            <List style={styles.list}>
+            <List>
               <InputItem
                 onChange={value => holesNumberChange(value)}
                 style={styles.textInput}
@@ -79,6 +80,22 @@ class Diagram extends Component {
                 value={holes[holesModalIndex].W}
                 placeholder="首排炮孔抵抗线"
               /> : null}
+              <InputItem
+                onChange={value => parentNumberChange(value)}
+                style={styles.textInput}
+                value={holes[holesModalIndex].parentNumber}
+                placeholder="前一炮孔编号(起始炮孔不填)"
+              />
+            </List>
+            <List renderHeader={() => '雷管类型'} style={styles.list}>
+              {detonators.map(i => (
+                <RadioItem 
+                  key={i.value} 
+                  checked={i.value === holes[holesModalIndex].detonator}
+                  onChange={() => detonatorChange(i.value)}>
+                  <Text style={{fontSize: 12}}>{i.value}</Text>
+                </RadioItem>
+              ))}
             </List>
             <Button onClick={modalConfirm} type="primary" style={styles.button}>
               <Text style={{fontSize:15}}>完成</Text>
@@ -93,10 +110,11 @@ class Diagram extends Component {
 let mapStateToProps = state => {
   return {
     ...state.holeIndex,
+    ...state.gridIndex,
     svgHeight: state.svgHeight,
     holesModal: state.holesModal,
     radioData: state.holeIndex.radioData,
-    holesModalIndex: state.holesModalIndex
+    holesModalIndex: state.holesModalIndex,
   }
 }
 
@@ -151,11 +169,39 @@ let mapDispatchToProps = dispatch => {
         }
       })
     },
-    holesNumberChange: (value) => {
+    holesNumberChange: value => {
       let state = store.getState()
       let { holes, focusRender } = state.holeIndex
       let index = state.holesModalIndex
       holes[index].number = value
+      dispatch({
+        type: "SET_HOLE_INDEX",
+        holeIndex: {
+          ...state.holeIndex,
+          holes,
+          focusRender: !focusRender
+        }
+      })
+    },
+    parentNumberChange: value => {
+      let state = store.getState()
+      let { holes, focusRender } = state.holeIndex
+      let index = state.holesModalIndex
+      holes[index].parentNumber = value
+      dispatch({
+        type: "SET_HOLE_INDEX",
+        holeIndex: {
+          ...state.holeIndex,
+          holes,
+          focusRender: !focusRender
+        }
+      })
+    },
+    detonatorChange: value => {
+      let state = store.getState()
+      let { holes, focusRender } = state.holeIndex
+      let index = state.holesModalIndex
+      holes[index].detonator = value
       dispatch({
         type: "SET_HOLE_INDEX",
         holeIndex: {
