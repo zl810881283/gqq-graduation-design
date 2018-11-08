@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, ScrollView, View} from 'react-native';
+import { StyleSheet, Text, ScrollView, Alert} from 'react-native';
 import store from '../store'
 import { connect } from "react-redux"
-import { Flex, WhiteSpace, Button, Toast } from 'antd-mobile-rn'
-import Modal from "react-native-modal"
+import { Flex, WhiteSpace, Button } from 'antd-mobile-rn'
 
 class HistoryRecords extends Component {
   static navigationOptions = {
@@ -62,7 +61,7 @@ let mapStateToProps = state => {
 let mapDispatchToProps = dispatch => {
   return {
     toResult: (index, navigation) => {
-      let { records } = store.getState()
+      let records = JSON.parse(JSON.stringify(store.getState().records))
       dispatch({
         type: "SET_NAME",
         name: records[index].name,
@@ -90,15 +89,24 @@ let mapDispatchToProps = dispatch => {
       navigation.navigate('Result')
     },
     deleteRecord: async (name) => {
-      await storage.remove({
-        key: 'records',
-        id: name
-      })
-      let records = await storage.getAllDataForKey('records')
-      store.dispatch({
-        type: 'SET_RECORDS',
-        records
-      })
+      Alert.alert(
+        '',
+        '确认删除吗?',
+        [
+          {text: 'Cancel', onPress: () => {}},
+          {text: 'OK', onPress: async () => {
+            await storage.remove({
+              key: 'records',
+              id: name
+            })
+            let records = await storage.getAllDataForKey('records')
+            store.dispatch({
+              type: 'SET_RECORDS',
+              records
+            })
+          }},
+        ],
+      )
     }
   }
 }

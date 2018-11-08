@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux"
 import Svg,{ Circle, Path, TSpan, G, Text as SvgText} from 'react-native-svg'
-import { StyleSheet, ScrollView, View, Text, TextInput} from 'react-native';
+import { StyleSheet, ScrollView, View, Text, TextInput, Alert} from 'react-native';
 import { Button, List, Toast } from 'antd-mobile-rn'
 import { Table, Row, TableWrapper, Cell } from 'react-native-table-component'
 import store from '../store'
@@ -148,25 +148,54 @@ let mapDispatchToProps = dispatch => {
       let state = store.getState()
       let {name, svgHeight, records, holeIndex, gridIndex, holeIndexTable, blastIndexDesign} = state
       if (name === '') return Toast.info('请先填写名称！', 1)
-      if (records.find(item => item.name === name)) return Toast.info('名称已存在！', 1)
-      storage.save({
-        key: 'records',
-        id: name,
-        data: {
-          name,
-          svgHeight,
-          holeIndex,
-          gridIndex,
-          holeIndexTable,
-          blastIndexDesign
-        }
-      })
-      Toast.info('保存成功', 1)
-      records = await storage.getAllDataForKey('records')
-      store.dispatch({
-        type: 'SET_RECORDS',
-        records
-      })
+      if (records.find(item => item.name === name)) {
+        Alert.alert(
+          '',
+          '将会覆盖之前的记录，确认吗?',
+          [
+            {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+            {text: 'OK', onPress: async () => {
+              storage.save({
+                key: 'records',
+                id: name,
+                data: {
+                  name,
+                  svgHeight,
+                  holeIndex,
+                  gridIndex,
+                  holeIndexTable,
+                  blastIndexDesign
+                }
+              })
+              Toast.info('保存成功', 1)
+              records = await storage.getAllDataForKey('records')
+              store.dispatch({
+                type: 'SET_RECORDS',
+                records
+              })
+            }},
+          ],
+        )
+      } else {
+        storage.save({
+          key: 'records',
+          id: name,
+          data: {
+            name,
+            svgHeight,
+            holeIndex,
+            gridIndex,
+            holeIndexTable,
+            blastIndexDesign
+          }
+        })
+        Toast.info('保存成功', 1)
+        records = await storage.getAllDataForKey('records')
+        store.dispatch({
+          type: 'SET_RECORDS',
+          records
+        })
+      }
     },
     nameChange: value => {
       dispatch({
