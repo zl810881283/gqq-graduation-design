@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux"
-import { StyleSheet, ScrollView, Text, Modal, TextInput} from 'react-native';
+import { StyleSheet, ScrollView, Text, Modal} from 'react-native';
 import Svg,{ Circle, Path, Text as SvgText, TSpan, G} from 'react-native-svg'
 import { Button, Checkbox, List, InputItem, Radio } from 'antd-mobile-rn'
 import store from '../store'
@@ -28,18 +28,17 @@ class HoleChart extends Component {
     let angle = theta-90
     if (dx>0 && dy<0) angle = 90-theta
     let p1 = {
-      x: dx > 0 ? childHole.x + 5*1: childHole.x - 5*1,
-      y: dy > 0 ? childHole.y + 10 : childHole.y - 10 
+      x: dx > 0 ? childHole.x + 5*1.5: childHole.x - 5*1.5,
+      y: dy > 0 ? childHole.y + 15 : childHole.y - 15 
     }
     let p2 = {
-      x: dx < 0 ? childHole.x + 5*1 : childHole.x - 5*1,
-      y: dy > 0 ? childHole.y + 10 : childHole.y - 10
+      x: dx < 0 ? childHole.x + 5*1.5 : childHole.x - 5*1.5,
+      y: dy > 0 ? childHole.y + 15 : childHole.y - 15
     }
     // 根据雷管类型绘制不同的路径线
     let strokeDasharray = 0
     if (childHole.detonator === '25ms') strokeDasharray = 5
-    if (childHole.detonator === '42ms') strokeDasharray = 15
-    if (childHole.detonator === '65ms') strokeDasharray = 0
+    if (childHole.detonator === '42ms') strokeDasharray = 0
     return (
       <G key={index+'holePath'}>
         <Path key={index+'holePath1'} d={`M ${parentHole.x} ${parentHole.y} L ${childHole.x} ${childHole.y}`} stroke="black" strokeDasharray={strokeDasharray} />
@@ -50,7 +49,7 @@ class HoleChart extends Component {
   }
 
   render() {
-    let { holes, topLinePoints, navigation, svgHeight, 
+    let { holes, topLinePoints, svgHeight, 
       holeCilck, holesModal, modalConfirm, radioData, parentNumberChange,
       holesModalIndex, holeTypeChange, holesNumberChange, WChange, 
       focusRender, onModalClose, detonators, detonatorChange } = this.props
@@ -160,7 +159,7 @@ let mapDispatchToProps = dispatch => {
         holesModal: true
       })
     },
-    modalConfirm: (navigation) => {
+    modalConfirm: () => {
       dispatch({
         type: 'SET_HOLES_MODAL',
         holesModal: false
