@@ -13,7 +13,7 @@ class Result extends Component {
 
   render() {
     let { 
-      navigation, Q2Change, fillLenChange, 
+      navigation, Q2Change, fillLenChange, holes,
       table1Head, table1Data, table2Head, table2Data, 
       save, nameChange, name, tableHead, tableData,
     } = this.props
@@ -24,6 +24,8 @@ class Result extends Component {
     const fillLenInput = (cellData, index) => {
       return <TextInput onChangeText={value => fillLenChange(value, index)}>{cellData}</TextInput>
     }
+    let table2WidthArr = holes.map(item => 75)
+    table2WidthArr.push(75)
     return (
       <ScrollView>
         <HoleChart />
@@ -55,8 +57,8 @@ class Result extends Component {
         </ScrollView>
         <ScrollView horizontal={true}>
           <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
-            <Row data={table2Head} widthArr={[75,75,75,75,75,75,75,75,75]}></Row>
-            <Row data={table2Data} widthArr={[75,75,75,75,75,75,75,75,75]}></Row>
+            <Row data={table2Head} widthArr={table2WidthArr}></Row>
+            <Row data={table2Data} widthArr={table2WidthArr}></Row>
           </Table>
         </ScrollView>
         <List style={styles.list}>
