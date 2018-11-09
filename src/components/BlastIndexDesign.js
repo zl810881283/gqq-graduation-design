@@ -26,7 +26,7 @@ class BlastIndexDesign extends Component {
             onChangeText={value => kChange(value)}
             style={styles.textInput}
             value={k}
-            placeholder="岩石参数k"
+            placeholder="考虑受前排孔的矿岩阻力作用的增加系数k"
           />
           <TextInput
             onChangeText={value => HChange(value)}
