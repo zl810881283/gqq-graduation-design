@@ -1,12 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux"
-import { StyleSheet, ScrollView, Text, Modal, TextInput} from 'react-native';
-import Svg,{ Circle, Path, Text as SvgText, TSpan, G} from 'react-native-svg'
-import { Button, Checkbox, List, InputItem, Radio } from 'antd-mobile-rn'
-import store from '../store'
-
-const CheckboxItem = Checkbox.CheckboxItem
-const RadioItem = Radio.RadioItem
+import { StyleSheet, ScrollView, Text} from 'react-native';
+import { Button } from 'antd-mobile-rn'
+import HoleChart from './HoleChart'
 
 class Diagram extends Component {
   static navigationOptions = {
@@ -14,205 +10,28 @@ class Diagram extends Component {
   }
 
   render() {
-    let { holes, topLinePoints, navigation, svgHeight, 
-      holeCilck, holesModal, modalConfirm, radioData, parentNumberChange,
-      holesModalIndex, holeTypeChange, holesNumberChange, WChange, 
-      focusRender, onModalClose, detonators, detonatorChange } = this.props
-    let topLinePath = ''
-    for (let i = 0;i < topLinePoints.length;i++) {
-      if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
-      if (i !== 0) topLinePath += "T " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
-    }
-    let fisrtLineHoles = holes.filter(item => item.type.indexOf('首排炮孔')!=-1)
+    let { navigation } = this.props
 
     return (
       <ScrollView>
-        <Svg
-          height={svgHeight}
-          width="350"
-        >
-          {holes.map((item, index) => {
-            if (!item.x) return null
-            return <G key={index} onPressOut={() => holeCilck(index)}>
-              <Circle cx={item.x} cy={item.y} r="10" fill="white" stroke="black" />
-              <SvgText x={item.x-4*item.number.length} y={item.y+5} fontSize="15">
-                <TSpan>{item.number}</TSpan>
-              </SvgText>
-            </G>
-          })}
-          { topLinePoints.length > 1 ? <Path d={topLinePath} stroke="black" fill="none"/> : null }
-          {fisrtLineHoles.map((item, index) => index !== 0 ? <Path d={`M ${fisrtLineHoles[index-1].x} ${fisrtLineHoles[index-1].y} L ${item.x} ${item.y}`} stroke="black" key={index}/> : null)}
-        </Svg>
+        <HoleChart />
         <Button onClick={() => navigation.navigate('BlastIndexDesign')} type="primary" style={styles.button}>
           <Text style={{fontSize:15}}>下一步</Text>
         </Button>        
         <Button onClick={() => navigation.navigate('Home')} type="primary" style={styles.button}>
           <Text style={{fontSize:15}}>返回主页</Text>
         </Button>
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={holesModal}
-          onRequestClose={onModalClose}>
-          <ScrollView style={{marginTop: 40}}>
-            <Text style={styles.inputTitle}>炮孔参数：</Text>
-            <List renderHeader={() => '炮孔类型'} style={{marginBottom: 10,fontSize: 25}}>
-              {radioData.map(i => (
-                <CheckboxItem 
-                  key={i.value} 
-                  checked={holes[holesModalIndex].type.indexOf(i.value) != -1}
-                  onChange={() => holeTypeChange(i.value)}
-                  style={styles.typeRadio}>
-                  <Text style={{fontSize: 12}}>{i.value}</Text>
-                </CheckboxItem>
-              ))}
-            </List>    
-            <List>
-              <InputItem
-                onChange={value => holesNumberChange(value)}
-                style={styles.textInput}
-                value={holes[holesModalIndex].number}
-                placeholder="孔号"
-              />
-              {holes[holesModalIndex].type.indexOf('首排炮孔') != -1 ? <InputItem
-                onChange={value => WChange(value)}
-                style={styles.textInput}
-                value={holes[holesModalIndex].W}
-                placeholder="首排炮孔抵抗线"
-              /> : null}
-              <InputItem
-                onChange={value => parentNumberChange(value)}
-                style={styles.textInput}
-                value={holes[holesModalIndex].parentNumber}
-                placeholder="前一炮孔编号(起始炮孔不填)"
-              />
-            </List>
-            <List renderHeader={() => '雷管类型'} style={styles.list}>
-              {detonators.map(i => (
-                <RadioItem 
-                  key={i.value} 
-                  checked={i.value === holes[holesModalIndex].detonator}
-                  onChange={() => detonatorChange(i.value)}>
-                  <Text style={{fontSize: 12}}>{i.value}</Text>
-                </RadioItem>
-              ))}
-            </List>
-            <Button onClick={modalConfirm} type="primary" style={styles.button}>
-              <Text style={{fontSize:15}}>完成</Text>
-            </Button>
-          </ScrollView>
-        </Modal>
       </ScrollView>
     )
   }
 }
 
 let mapStateToProps = state => {
-  return {
-    ...state.holeIndex,
-    ...state.gridIndex,
-    svgHeight: state.svgHeight,
-    holesModal: state.holesModal,
-    radioData: state.holeIndex.radioData,
-    holesModalIndex: state.holesModalIndex,
-  }
+  return {}
 }
 
 let mapDispatchToProps = dispatch => {
-  return {
-    holeCilck: index => {
-      dispatch({
-        type: "SET_HOLES_MODAL_INDEX",
-        holesModalIndex: index
-      })
-      dispatch({
-        type: 'SET_HOLES_MODAL',
-        holesModal: true
-      })
-    },
-    modalConfirm: (navigation) => {
-      dispatch({
-        type: 'SET_HOLES_MODAL',
-        holesModal: false
-      })
-    },
-    holeTypeChange: value => {
-      let state = store.getState()
-      let { holes, focusRender } = state.holeIndex
-      let index = state.holesModalIndex
-      let typeIndex = holes[index].type.indexOf(value)
-      if (typeIndex != -1) {
-        holes[index].type.splice(typeIndex, 1)
-      } else {
-        holes[index].type.push(value)
-      }
-      dispatch({
-        type: "SET_HOLE_INDEX",
-        holeIndex: {
-          ...state.holeIndex,
-          holes,
-          focusRender: !focusRender
-        }
-      })
-    },
-    WChange: value => {
-      let state = store.getState()
-      let { holes, focusRender } = state.holeIndex
-      let index = state.holesModalIndex
-      holes[index].W = value
-      dispatch({
-        type: "SET_HOLE_INDEX",
-        holeIndex: {
-          ...state.holeIndex,
-          holes,
-          focusRender: !focusRender
-        }
-      })
-    },
-    holesNumberChange: value => {
-      let state = store.getState()
-      let { holes, focusRender } = state.holeIndex
-      let index = state.holesModalIndex
-      holes[index].number = value
-      dispatch({
-        type: "SET_HOLE_INDEX",
-        holeIndex: {
-          ...state.holeIndex,
-          holes,
-          focusRender: !focusRender
-        }
-      })
-    },
-    parentNumberChange: value => {
-      let state = store.getState()
-      let { holes, focusRender } = state.holeIndex
-      let index = state.holesModalIndex
-      holes[index].parentNumber = value
-      dispatch({
-        type: "SET_HOLE_INDEX",
-        holeIndex: {
-          ...state.holeIndex,
-          holes,
-          focusRender: !focusRender
-        }
-      })
-    },
-    detonatorChange: value => {
-      let state = store.getState()
-      let { holes, focusRender } = state.holeIndex
-      let index = state.holesModalIndex
-      holes[index].detonator = value
-      dispatch({
-        type: "SET_HOLE_INDEX",
-        holeIndex: {
-          ...state.holeIndex,
-          holes,
-          focusRender: !focusRender
-        }
-      })
-    },
-    onModalClose: () => {}
-  }
+  return {}
 }
 
 const styles = StyleSheet.create({

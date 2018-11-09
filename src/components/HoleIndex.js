@@ -269,12 +269,12 @@ let mapDispatchToProps = dispatch => {
       if (maxX==minX && maxY==minY) return Alert.alert('提示', '请输入至少两个位置不同的炮孔!')
       holes.forEach((item, index) => {
         item.x = Number(((xs[index] - minX)*unit).toFixed(1)) + 25
-        item.y = Number(((ys[index] - minY)*unit).toFixed(1)) + 25
+        item.y = Number((Math.abs(ys[index] - maxY)*unit).toFixed(1)) + 25
         if (item.y > svgHeight) svgHeight = item.y
       })
       topLinePoints.forEach((item, index) => {
         item.x = Number(((xs[index+holesLen] - minX)*unit).toFixed(1)) + 25
-        item.y = Number(((ys[index+holesLen] - minY)*unit).toFixed(1)) + 25
+        item.y = Number((Math.abs(ys[index] - maxY)*unit).toFixed(1)) + 25
         if (item.y > svgHeight) svgHeight = item.y
       })
       dispatch({

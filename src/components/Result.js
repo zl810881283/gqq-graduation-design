@@ -1,60 +1,23 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux"
-import Svg,{ Circle, Path, TSpan, G, Text as SvgText} from 'react-native-svg'
-import { StyleSheet, ScrollView, View, Text, TextInput, Alert} from 'react-native';
+import { StyleSheet, ScrollView, Text, TextInput, Alert} from 'react-native';
 import { Button, List, Toast } from 'antd-mobile-rn'
 import { Table, Row, TableWrapper, Cell } from 'react-native-table-component'
+import HoleChart from './HoleChart'
 import store from '../store'
 
 class Result extends Component {
   static navigationOptions = {
-    title: '炮孔示意图'
-  }
-
-  getPath = (index, holes) => {
-    let parentNumber = holes[index].parentNumber
-    if (parentNumber === '') return null
-    let parentIndex = holes.findIndex(item => item.number === parentNumber)
-    let parentHole = holes[parentIndex], childHole = holes[index]
-    // 计算箭头两点的位置
-    let dx = Math.abs(parentHole.x-childHole.x)
-    let dy = Math.abs(parentHole.y-childHole.y)
-    let theta = Math.atan(dy/dx)
-    theta *= 180 / Math.PI
-    let angle = theta+270
-    let p1 = {
-      x: parentHole.x-childHole.x > 0 ? childHole.x + 5*1: childHole.x - 5*1,
-      y: parentHole.y-childHole.y > 0 ? childHole.y + 10 : childHole.y - 10 
-    }
-    let p2 = {
-      x: parentHole.x-childHole.x < 0 ? childHole.x + 5*1 : childHole.x - 5*1,
-      y: parentHole.y-childHole.y > 0 ? childHole.y + 10 : childHole.y - 10
-    }
-    // 根据雷管类型绘制不同的路径线
-    let strokeDasharray = 0
-    if (childHole.detonator === '25ms') strokeDasharray = 5
-    if (childHole.detonator === '42ms') strokeDasharray = 15
-    return (
-      <G key={index}>
-        <Path d={`M ${parentHole.x} ${parentHole.y} L ${childHole.x} ${childHole.y}`} stroke="black" strokeDasharray={strokeDasharray} />
-        <Path transform={`rotate(${angle},${childHole.x},${childHole.y})`} d={`M ${childHole.x} ${childHole.y} L ${p1.x} ${p1.y}`} stroke="black" />
-        <Path transform={`rotate(${angle},${childHole.x},${childHole.y})`} d={`M ${childHole.x} ${childHole.y} L ${p2.x} ${p2.y}`} stroke="black" />
-      </G>
-    )
+    title: '设计结果'
   }
 
   render() {
     let { 
-      holes, svgHeight, topLinePoints, navigation, 
+      navigation, Q2Change, fillLenChange, 
       table1Head, table1Data, table2Head, table2Data, 
       save, nameChange, name, tableHead, tableData,
-      Q2Change, fillLenChange
     } = this.props
-    let topLinePath = ''
-    for (let i = 0;i < topLinePoints.length;i++) {
-      if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
-      if (i !== 0) topLinePath += "T " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
-    }
+
     const Q2Input = (cellData, index) => {
       return <TextInput onChangeText={value => Q2Change(value, index)}>{cellData}</TextInput>
     }
@@ -63,25 +26,7 @@ class Result extends Component {
     }
     return (
       <ScrollView>
-        <Svg
-          height={svgHeight}
-          width="350"
-         >
-          {holes.map((item, index) => {
-            if (!item.x) return null
-            return <G key={item.number}>
-              <Circle cx={item.x} cy={item.y} r="10" fill="white" stroke="black" />
-              <SvgText x={item.x-4} y={item.y+5} fontSize="15">
-                <TSpan>{item.number}</TSpan>
-              </SvgText>
-              <SvgText x={item.x-25} y={item.y+4} fontSize="10">
-                <TSpan>{item.l}</TSpan>
-              </SvgText>
-              {this.getPath(index,holes)}
-            </G>
-          })}
-          { topLinePoints.length > 1 ? <Path d={topLinePath} stroke="black" fill="none"/> : null }
-        </Svg>
+        <HoleChart />
         <ScrollView horizontal={true}>
           <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
             <Row data={tableHead} widthArr={[75,75,75,75,75,75,75,75,75,75,75,75]}/>
