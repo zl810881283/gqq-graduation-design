@@ -38,7 +38,8 @@ class HoleChart extends Component {
     // 根据雷管类型绘制不同的路径线
     let strokeDasharray = 0
     if (childHole.detonator === '25ms') strokeDasharray = 5
-    if (childHole.detonator === '42ms') strokeDasharray = 0
+    if (childHole.detonator === '42ms') strokeDasharray = 15
+    if (childHole.detonator === '65ms') strokeDasharray = 0
     return (
       <G key={index+'holePath'}>
         <Path key={index+'holePath1'} d={`M ${parentHole.x} ${parentHole.y} L ${childHole.x} ${childHole.y}`} stroke="black" strokeDasharray={strokeDasharray} />
@@ -54,8 +55,10 @@ class HoleChart extends Component {
       holesModalIndex, holeTypeChange, holesNumberChange, WChange, 
       focusRender, onModalClose, detonators, detonatorChange } = this.props
     let topLinePath = '', 
-        cutLinePath1 = `M 40 ${svgHeight+25} L 120 ${svgHeight+25}`, 
-        cutLinePath2 = `M 200 ${svgHeight+25} L 280 ${svgHeight+25}`
+        cutLinePath1 = `M 20 ${svgHeight+25} L 80 ${svgHeight+25}`, 
+        cutLinePath2 = `M 130 ${svgHeight+25} L 190 ${svgHeight+25}`,
+        cutLinePath3 = `M 240 ${svgHeight+25} L 300 ${svgHeight+25}`
+
     for (let i = 0;i < topLinePoints.length;i++) {
       if (i === 0) topLinePath += "M " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
       if (i !== 0) topLinePath += "T " + topLinePoints[i].x + ' ' + topLinePoints[i].y + ' '
@@ -78,14 +81,18 @@ class HoleChart extends Component {
             </G>
           })}
           { topLinePoints.length > 1 ? <Path d={topLinePath} stroke="black" fill="none"/> : null }
-          <Path d={cutLinePath1} stroke="black" fill="none"/>
-          <SvgText x='130' y={svgHeight+30} fontSize="15">
+          <Path d={cutLinePath1} strokeDasharray='5'  stroke="black" fill="none"/>
+          <SvgText x='85' y={svgHeight+30} fontSize="15">
             <TSpan>25ms</TSpan>
           </SvgText>
-          <SvgText x='290' y={svgHeight+30} fontSize="15">
+          <SvgText x='195' y={svgHeight+30} fontSize="15">
             <TSpan>42ms</TSpan>
           </SvgText>
-          <Path d={cutLinePath2} strokeDasharray='5' stroke="black" fill="none"/>
+          <Path d={cutLinePath2} strokeDasharray='15' stroke="black" fill="none"/>
+          <SvgText x='305' y={svgHeight+30} fontSize="15">
+            <TSpan>65ms</TSpan>
+          </SvgText>
+          <Path d={cutLinePath3} stroke="black" fill="none"/>
         </Svg>
         <Modal
           title="炮孔参数"

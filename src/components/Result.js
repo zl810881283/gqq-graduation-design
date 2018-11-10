@@ -4,6 +4,7 @@ import { StyleSheet, ScrollView, Text, TextInput, Alert} from 'react-native';
 import { Button, List, Toast } from 'antd-mobile-rn'
 import { Table, Row, TableWrapper, Cell } from 'react-native-table-component'
 import HoleChart from './HoleChart'
+import Table1 from './Table1'
 import store from '../store'
 
 class Result extends Component {
@@ -50,10 +51,7 @@ class Result extends Component {
           </Table>
         </ScrollView>
         <ScrollView horizontal={true}>
-          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
-            <Row data={table1Head} widthArr={[75,75,75,75,75,75,75,75,75]}></Row>
-            <Row data={table1Data} widthArr={[75,75,75,75,75,75,75,75,75]}></Row>
-          </Table>
+          <Table1></Table1>
         </ScrollView>
         <ScrollView horizontal={true}>
           <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
