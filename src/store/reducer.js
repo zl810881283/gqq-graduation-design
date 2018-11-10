@@ -457,9 +457,6 @@ const initialState = {
       { value: '42ms' },
       { value: '65ms' },
     ],
-    table1Head1: ['爆破器材', '炸药(kg)', '延期雷管(发)',  '导爆索(米)', '导爆管(米)'],
-    table1Head2: ['乳化', '多孔粒状', '孔内', '西安地表'],
-    table1Head3: ['25ms', '42ms', '65ms'],
     table1Data: ['合计', '', '', '', '', '', '', '', '300' ],
     table2Head: ['孔号'],
     table2Data: ['装药量']
