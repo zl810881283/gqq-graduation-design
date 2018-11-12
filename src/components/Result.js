@@ -56,7 +56,7 @@ class Result extends Component {
         <ScrollView horizontal={true}>
           <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
             <Row data={table2Head} widthArr={table2WidthArr}></Row>
-            <Row data={table2Data} widthArr={table2WidthArr}></Row>
+            <Row data={table2Data} widthArr={table2WidthArr} style={{height:40}}></Row>
           </Table>
         </ScrollView>
         <List style={styles.list}>

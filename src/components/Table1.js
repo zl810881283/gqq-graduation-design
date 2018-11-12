@@ -11,12 +11,12 @@ class Table1 extends React.Component{
     return (
       <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} style={styles.table}>
         <TableWrapper style={styles.row}>
-          <Cell data={'爆破器材'} textStyle={styles.text} style={{width: 75, height: 90}}/>
+          <Cell data={'爆破器材'} textStyle={styles.text} style={{width: 75, height: 115}}/>
           <TableWrapper style={{flexDirection: 'column'}}>
-            <Row data={['炸药(kg)']} style={{width:160}} textStyle={styles.powerText} />
+            <Row data={['炸药(kg)']} style={{width:160, height: 30}} textStyle={styles.powerText} />
             <TableWrapper style={{flexDirection: 'row'}}>
-              <Cell onPress={()=>powerClick('乳化')} data={['乳化' + (selected == '乳化' ? '√' : '')]} style={{width:75}} textStyle={styles.text} />
-              <Cell onPress={()=>powerClick('多孔粒状')} data={['多孔粒状' + (selected == '多孔粒状' ? '√' : '')]} style={{width:85}} textStyle={styles.powerSonText} />
+              <Cell onPress={()=>powerClick('乳化')} data={['乳化' + (selected == '乳化' ? '√' : '')]} style={{width:75, height:85}} textStyle={styles.text} />
+              <Cell onPress={()=>powerClick('多孔粒状')} data={['多孔粒状' + (selected == '多孔粒状' ? '√' : '')]} style={{width:85, height:85}} textStyle={styles.text} />
             </TableWrapper>
           </TableWrapper>
           <TableWrapper style={{flexDirection: 'column'}}>
@@ -29,8 +29,8 @@ class Table1 extends React.Component{
               <Cell data={['65ms']} widthArr={[75, 75]} textStyle={styles.text} />
             </TableWrapper>
           </TableWrapper>
-          <Cell data={'导爆索(米)'} textStyle={styles.text} style={{width: 85, height: 90}}/>
-          <Cell data={'导爆管(米)'} textStyle={styles.text} style={{width: 85, height: 90}}/>
+          <Cell data={'导爆索(米)'} textStyle={styles.text} style={{width: 85, height: 115}}/>
+          <Cell data={'导爆管(米)'} textStyle={styles.text} style={{width: 85, height: 115}}/>
         </TableWrapper>
         <Row data={table1Data} widthArr={[75,75,85,75,75,75,75,85,85]}></Row>
       </Table>
@@ -47,13 +47,18 @@ let mapStateToProps = state => {
 let mapDispatchToProps = dispatch => {
   return {
     powerClick: value => {
-      let {gridIndex} = store.getState()
+      let {gridIndex, holeIndex} = store.getState()
       let {table1Data} = gridIndex
+      let {holes} = holeIndex
+      let total = 0
+      for (let i = 0; i < holes.length;i++) {
+        total += +holes[i].Q
+      }
       if (value === '乳化') {
-        table1Data[1] = JSON.parse(JSON.stringify(table1Data[2]))
+        table1Data[1] = total.toFixed(2)
         table1Data[2] = ''
       } else {
-        table1Data[2] = JSON.parse(JSON.stringify(table1Data[1]))
+        table1Data[2] = total.toFixed(2)
         table1Data[1] = ''
       }
       dispatch({
@@ -100,7 +105,7 @@ const styles = StyleSheet.create({
   text: { margin: 6 },
   deText: { margin: 6, marginLeft: 100 },
   powerText: { margin: 6, marginLeft: 40 },
-  powerSonText: { margin: 6, marginTop: 20, marginBottom: 20 },
+  powerSonText: { margin: 6 },
   row: { flexDirection: 'row' },
 });
 
